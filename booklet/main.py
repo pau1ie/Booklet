@@ -31,38 +31,54 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 from __future__ import annotations
-import sys, os
-sys.path.insert(0, os.path.abspath("."))
-
-from booklet.meta import __version__ as __version__
-from booklet.meta import name
+import sys
+import os
 
 import pypdf
 from PIL import Image
 
+sys.path.insert(0, os.path.abspath("."))
+
+from booklet.meta import __version__
+from booklet.meta import name
+
 from booklet.core.manuscript import Manuscript
-from booklet.core.modifiers import *
+
+from booklet.core.converters.toimage import ToImage
+
+from booklet.core.templates.imposition import Imposition
+from booklet.core.templates.printingmark import PrintingMark
+
 from booklet.deprecated.converters import SigComposition, Signature
-from booklet.utils.misc import *
-from booklet.data import *
+
+from booklet.utils.misc import resources_path, get_page_range
+
+
+# from booklet.data import *
+from booklet.data import ( PaperFormat, imposition_icon_names, printing_icon_names,
+    homepage, git_repository, tutorial
+)
+
 from booklet.utils.images import icon_path
 from booklet.gui import Booklet
 from booklet.parser import parser
 from booklet.utils.conversion import pts2mm, mm2pts
 
-
 # Misc utils
-def check_dir(path):
-    if os.path.isfile(path):
+def check_dir(path_to_check):
+    """
+    Check validity of passsed path.
+    """
+    if os.path.isfile(path_to_check):
         return False
-    elif os.path.isdir(path):
+    if os.path.isdir(path_to_check):
         return True
-    else:
-        path_split = os.path.split(path)
-        if os.path.isdir(path_split[0]):
-            return False
-        else:
-            raise ValueError(f"Is it path? {path}")
+
+    path_split = os.path.split(path_to_check)
+    if os.path.isdir(path_split[0]):
+        return False
+
+    raise ValueError(f"Is {path_to_check} a path?")
 
 
 def check_composition(nn, ns):
@@ -71,7 +87,7 @@ def check_composition(nn, ns):
         return False
     if nl == 2 and not nn == 1:
         return False
-    elif nl == 12 and nn not in [1, 3]:
+    if nl == 12 and nn not in [1, 3]:
         return False
     elif nl == 24 and nn not in [1, 2, 3, 6]:
         return False

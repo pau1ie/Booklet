@@ -28,7 +28,8 @@
 
 from __future__ import annotations
 
-import platform, os, sys
+import platform
+import os
 from functools import partial
 import re
 from math import log2
@@ -37,28 +38,32 @@ from math import log2
 import tkinter as tk
 from tkinter import filedialog
 
-if platform.system() != "Darwin":
-    from tkinter import ttk
-else:
-    import tkmacosx as ttk  # Mac OS specific module
 from tkinter.colorchooser import askcolor
 
 # 3rd parties----------------------------
-from PIL import Image, ImageTk
+from PIL import ImageTk
 import simpleaudio
-import PyPDF2 as pypdf
+import pypdf
 
 
 # Project modules-----------------------------------------------
 
 from booklet.core.manuscript import Manuscript
-from booklet.core.modifiers import *
-import booklet.data as data
-from booklet.utils.misc import *
+#from booklet.core.modifiers import *
+from booklet.core.converters.toimage import ToImage
+
+from booklet.core.templates.imposition import Imposition
+from booklet.core.templates.printingmark import PrintingMark
+from booklet import data
+from booklet.utils.misc import resources_path, open_url
 from booklet.utils.conversion import mm2pts, pts2mm
 from booklet.utils.color import hex2cmyk, cmyk2rgb, rgb2hex
 from booklet.deprecated.converters import SigComposition, Signature
 
+if platform.system() != "Darwin":
+    from tkinter import ttk
+#else:
+#    import tkmacosx as ttk  # Mac OS specific module
 
 # UI-----------------------------------------------------------------------
 class Booklet:
@@ -77,7 +82,7 @@ class Booklet:
         re_range_validation=data.re_get_ranges,
         re_character_validation=data.re_check_permited_character,
         fix=False,
-        width=390,
+        width=990,
         height=780,
     ):
         """init
@@ -293,7 +298,7 @@ class Booklet:
 
         if self.fix:
             self.window.geometry(f"{self.window_width}x{self.window_height}+{x}+{y}")
-        self.window.resizable(False, True)
+            self.window.resizable(False, True)
 
         # Stack top of windows arrangement at beginning of program
         self.window.attributes("-topmost", True)
