@@ -65,20 +65,6 @@ class Manuscript:
             pages.append(self.pdf.pages[page_num])
         return pages
 
-    @property
-    def modifier_infos(self) -> dict:
-        info = []
-        for modifier in self.modifiers:
-            info.append(
-                {
-                    modifier.name: {
-                        "type": modifier.type,
-                        "description": modifier.description,
-                    }
-                }
-            )
-        return info
-
     def __del__(self, *args):
         try:
             self.file.close()
@@ -95,7 +81,6 @@ class Manuscript:
     ):
 
         self.tem_directory = tempfile.TemporaryDirectory()
-        self.temp_manu = None  # Use for temporary manuscript in update process
         self.file_path = self.__get_path(input, mode="f")
         self.file_name = self.file_path.stem
         self.file_format = self.file_path.suffix
@@ -177,44 +162,6 @@ class Manuscript:
             float(pdf.pages[0].mediabox.height),
         )
         return page_num, paper_format
-
-    def __vaildate_index(self, i: int, li: list):
-        if i >= len(li):
-            raise ValueError(f"Exceed iterable index, {i} >= {len(li)}")
-
-    # Modifier list routines
-    def modifier_order_reverse(self) -> NoReturn:
-        self.modifiers.reverse()
-
-    def modifier_order_change(self, i: int, j: int) -> NoReturn:  # from i to j
-        if not (
-            validation.check_integer(i, True) and validation.check_integer(j, True)
-        ):
-            raise ValueError(f"Invaild index value, {i} {j}")
-        self.__vaildate_index(i, self.modifiers)
-        self.__vaildate_index(j, self.modifiers)
-
-        if i != j:
-            m_i = self.modifiers[i]
-            self.modifer_del(i)
-            self.modifiers.insert(j, m_i)
-
-    def modifier_order_exchange(self, i: int, j: int) -> NoReturn:
-        if not (
-            validation.check_integer(i, True) and validation.check_integer(j, True)
-        ):
-            raise ValueError(f"Invaild index value, {i} {j}")
-        self.__vaildate_index(i, self.modifiers)
-        self.__vaildate_index(j, self.modifiers)
-        if i != j:
-            self.modifiers[i], self.modifiers[j] = (
-                self.modifiers[j],
-                self.modifiers[i],
-            )  # Swap
-
-    def modifier_del(self, i: int) -> NoReturn:
-        self.__vaildate_index(i, self.modifiers)
-        del self.modifiers[i]
 
     def modifier_register(self, modifier:Modifier, to: bool = False) -> NoReturn:
         if not hasattr(modifier, "__type__"):
@@ -394,10 +341,6 @@ class Modifier:
         self.args = args
         self.kwargs = kwargs
 
-    @property
-    def file_requirement(self):
-        return self.__external_file__
-
     def get_new_pdf(self, index:int, tem_dir:Union[str, Path], filemode:str="safe") -> Tuple[pypdf.PdfFileWriter, Union[NamedTempFile, io.BytesIO]]:
         """
         Return new :class:`PdfFileWriter` object in pypdf and new file, file-like object.
@@ -423,13 +366,6 @@ class Modifier:
             new_file = io.BytesIO()
         new_pdf = pypdf.PdfWriter()
         return new_pdf, new_file
-
-    def kwargs_check(self, **kwargs):
-        """
-        Keyword argument parsing method.
-        Implemention is needed in child class.
-        """
-        pass
 
     def do(self, index:int, manuscript:Manuscript, *args, **kwargs) -> NoReturn:
         """
@@ -496,11 +432,6 @@ class Template(Modifier):
         self.direction = direction
         self.custom_rule = rule
         self.custom_position = position
-
-    @classmethod
-    def from_generator(cls, direction, generator: Callable, *args, **kwargs):
-        file, rule, position = generator(*args, **kwargs)
-        return cls(file, direction, rule, position)
 
     # Internal routines
     def __validate_page_num(self, cls, page_num, range=None):

@@ -26,10 +26,9 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
-from reportlab.lib.colors import CMYKColor
 from typing import Union, Tuple, Literal
-import collections
+import collections.abc
+from reportlab.lib.colors import CMYKColor
 
 # Reportlab color class supports hex(), rgb(), cmyk() attributes.
 Basis_Colors = {
@@ -77,10 +76,12 @@ def __color_conversion(
     :raises ValueError: :param:`i` or :param:`f` value is not one of "rgb", "cmyk", "hex".
     :raises ValueError: :code:`i = "rgb"`, Invaild rgb value, not an iterable object.
     :raises ValueError: :code:`i = "rgb"`, Invaild rgb value, its length is not 3.
-    :raises TypeError: :code:`i = "rgb"`, Not an integer array, at least one of element is not integer type.
+    :raises TypeError: :code:`i = "rgb"`, Not an integer array, at least
+        one of element is not integer type.
     :raises ValueError: :code:`i = "cmyk"`, Invaild cmyk value, not an iterable object.
     :raises ValueError: :code:`i = "cmyk"`, Invaild cmyk value, its length is not 4.
-    :raises TypeError: :code:`i = "cmyk"`, Not a float array, at least one of element is not float type.
+    :raises TypeError: :code:`i = "cmyk"`, Not a float array, at least
+        one of element is not float type.
     :raises TypeError: :code:`i = "hex"`, Invaild type, it is not a stirng object.
     :raises ValueError: :code:`i = "hex"`, Invaild hex string, its length is not 7.
     :raises ValueError: :code:`i = "hex"`, Invaild hex string, its length is not 7.
@@ -90,25 +91,27 @@ def __color_conversion(
     if i not in color_mode or f not in color_mode:
         raise ValueError(f"Invaild conversion space, they must be in {color_mode}")
     if i == "rgb":
-        if not isinstance(value, collections.Iterable):
+        if not isinstance(value, collections.abc.Iterable):
             raise ValueError("Invaild rgb value, not an iterable object")
         if len(value) != 3:
             raise ValueError("Invaild rgb value, its length is not 3")
-        if type(value[0]) != int or type(value[1]) != int or type(value[2]) != int:
+        if (not isinstance(value[0], int)
+            or not isinstance(value[1], int)
+            or not isinstance(value[2], int)):
             raise TypeError(
                 "Not an integer array, at least one of element is not integer type."
             )
         r, g, b = int(value[0]), int(value[1]), int(value[2])
     elif i == "cmyk":
-        if not isinstance(value, collections.Iterable):
+        if not isinstance(value, collections.abc.Iterable):
             raise ValueError("Invaild cmyk value, not an iterable object")
         if len(value) != 4:
             raise ValueError("Invaild cmyk value, its length is not 4")
         if (
-            type(value[0]) != float
-            or type(value[1]) != float
-            or type(value[2]) != float
-            or type(value[3]) != float
+            not isinstance(value[0], float)
+            or not isinstance(value[1], float)
+            or not isinstance(value[2], float)
+            or not isinstance(value[3], float)
         ):
             raise TypeError(
                 "Not a float array, at least one of element is not float type."
@@ -118,12 +121,12 @@ def __color_conversion(
         g = int(255 * (1 - m) * (1 - k))
         b = int(255 * (1 - y) * (1 - k))
     elif i == "hex":
-        if type(value) != str:
-            raise TypeError("Invaild type, it is not a stirng object")
+        if not isinstance(value, str):
+            raise TypeError("Invaild type, it is not a string object")
         if len(value) != 7:
-            raise ValueError("Invaild hex string, {value} is not of length 7")
+            raise ValueError(f"Invaild hex string, {value} is not of length 7")
         if "#" not in value and len(value) != 6:
-            raise ValueError("Invaild hex string, #{value} is not of length 7")
+            raise ValueError(f"Invaild hex string, #{value} is not of length 7")
         hex_string = value.replace("#", "") if "#" in value else value
         r, g, b = (
             int(hex_string[0:2], 16),
@@ -154,7 +157,7 @@ def __color_conversion(
         return "#" + rcode + gcode + bcode
 
 
-def hex2cmyk(hex: str) -> Tuple[float, float, float, float]:
+def hex2cmyk(hexstring: str) -> Tuple[float, float, float, float]:
     """Convert hex string to cmyk.
 
     :param hex: Hex color formatted string.
@@ -162,10 +165,10 @@ def hex2cmyk(hex: str) -> Tuple[float, float, float, float]:
     :return: Cmyk representation.
     :rtype: Tuple[float, float, float, float]
     """
-    return __color_conversion(hex, i="hex", f="cmyk")
+    return __color_conversion(hexstring, i="hex", f="cmyk")
 
 
-def hex2rgb(hex: str) -> Tuple[int, int, int]:
+def hex2rgb(hexstring: str) -> Tuple[int, int, int]:
     """
     Convert hex string to rgb.
 
@@ -174,7 +177,7 @@ def hex2rgb(hex: str) -> Tuple[int, int, int]:
     :return: Rgb representation.
     :rtype: Tuple[int, int, int]
     """
-    return __color_conversion(hex, i="hex", f="rgb")
+    return __color_conversion(hexstring, i="hex", f="rgb")
 
 
 def cmyk2rgb(cmyk=None, *args, **kwargs) -> Tuple[int, int, int]:
@@ -203,7 +206,7 @@ def cmyk2rgb(cmyk=None, *args, **kwargs) -> Tuple[int, int, int]:
     :return: cmyk vlaue
     :rtype: Tuple[int, int, int]
     """
-    if cmyk == None and len(kwargs) == 4:
+    if cmyk is None and len(kwargs) == 4:
         cyan_str = ["c", "C", "cyan", "Cyan", "CYAN"]
         magenta_str = ["m", "M", "magenta", "Magenta", "MAGENTA"]
         yellow_str = ["y", "Y", "yellow", "Yellow", "YELLOW"]
@@ -301,7 +304,7 @@ def rgb2cmyk(rgb=None, *args, **kwargs) -> Tuple[float, float, float, float]:
     :return: cmyk value
     :rtype: Tuple[float, float, float, float]
     """
-    if rgb == None and len(kwargs) == 3:
+    if rgb is None and len(kwargs) == 3:
         red_str = ["r", "R", "red", "Red", "RED"]
         green_str = ["g", "G", "green", "Green", "GREEN"]
         blue_str = ["b", "B", "blue", "Blue", "BLUE"]
@@ -343,7 +346,7 @@ def rgb2hex(rgb=None, *args, **kwargs) -> str:
     :return: hex string
     :rtype: str
     """
-    if rgb == None and len(kwargs) == 3:
+    if rgb is None and len(kwargs) == 3:
         red_str = ["r", "R", "red", "Red", "RED"]
         green_str = ["g", "G", "green", "Green", "GREEN"]
         blue_str = ["b", "B", "blue", "Blue", "BLUE"]

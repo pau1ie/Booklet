@@ -30,14 +30,11 @@ from __future__ import annotations
 
 # Python standard
 
-from copy import copy
 import io
 from math import floor
 
 # Type hint
-from typing import Union, Callable, List, Tuple, Dict, Literal
-from types import FunctionType
-from io import BytesIO, FileIO
+from typing import Union, Tuple
 
 # PDF
 import pypdf
@@ -47,7 +44,7 @@ from reportlab.pdfgen.canvas import Canvas
 from booklet.core.manuscript import Template, Manuscript
 from booklet.core.converters.section import SecComposition
 from booklet.utils import validation
-from booklet.utils.misc import *
+#from booklet.utils.misc import *
 from booklet.utils.color import hex2cmyk, rgb2cmyk
 
 
@@ -77,17 +74,18 @@ class Imposition(Template):
 
         self.imposition = bool(imposition)
         self.gap = gap if validation.check_integer(gap, positive=True) else 0
-        self.proof = proof if type(proof) == bool else False
+        self.proof = proof if isinstance(proof, bool) else False
         self.proof_color = self.___get_cmyk(proof_color)
-        self.proof_width = self.gap if proof_width == None else proof_width
+        self.proof_width = self.gap if proof_width is None else proof_width
         self.layout = (
             imposition_layout.layout
             if isinstance(imposition_layout, SecComposition)
             else imposition_layout
         )
         self.pages_per_template = (
-            self.layout.layout[0] * self.layout.layout[1] if self.layout != None else 1
+            self.layout.layout[0] * self.layout.layout[1] if self.layout is not None else 1
         )
+        self.manuscript_format = None
 
     def rule(
         self, i: int
@@ -114,11 +112,12 @@ class Imposition(Template):
 
     # Internal routines
     def ___get_cmyk(self, color) -> Tuple[float, float, float, float]:
-        if type(color) == str:
+        "Convert the colour to CMYK format"
+        if isinstance(color, str):
             return hex2cmyk(color)
         if len(color) == 3:
             return rgb2cmyk(color)
-        elif len(color) == 4:
+        if len(color) == 4:
             return color
 
     def generate_template(self, paper_width, paper_height, template_pages):
@@ -157,12 +156,13 @@ class Imposition(Template):
         tem_pdf_byte.seek(0)
         proof_templates = pypdf.PdfReader(tem_pdf_byte)
 
+# Add the signature proof
         for i in range(0, template_pages):
             proof_page = proof_templates.pages[i]
-            proof_page.mediabox.lower_left((proof_position[0], heights[i]))
-            proof_page.mediabox.upper_right(
-                (proof_position[0] + proof_width, heights[i] + proof_height)
-            )
+            proof_page.mediabox.lower_left = (proof_position[0], heights[i])
+            proof_page.mediabox.upper_right = (proof_position[0]
+                                + proof_width, heights[i] + proof_height)
+
 
         return proof_templates, tem_pdf_byte
 
@@ -180,7 +180,7 @@ class Imposition(Template):
         paper_height = (self.manuscript_format[1] + self.gap) * self.layout.layout[0] - (
             self.gap
         )
-        format = (paper_width, paper_height)
+        paper_format = (paper_width, paper_height)
 
         manuscript_pages = len(manuscript.pages)
         pages_per_template = self.pages_per_template
@@ -191,7 +191,7 @@ class Imposition(Template):
         )
 
         for i in range(0, template_pages):
-            new_pdf.add_blank_page(format[0], format[1])
+            new_pdf.add_blank_page(paper_format[0], paper_format[1])
 
         for i in range(0, template_pages):
             # manu_pages - Which input pages appear on this output page.
@@ -211,7 +211,7 @@ class Imposition(Template):
                 )
 
         if self.proof:
-            proof_templates, temp_file = self.generate_template(
+            proof_templates, _ = self.generate_template(
                 paper_width, paper_height, template_pages
             )
             for i in range(0, template_pages):

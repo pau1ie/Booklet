@@ -33,6 +33,8 @@ import os
 from functools import partial
 import re
 from math import log2
+from pathlib import Path
+from typing import NoReturn
 
 # tkinter----------------------------------
 import tkinter as tk
@@ -49,7 +51,8 @@ import pypdf
 # Project modules-----------------------------------------------
 
 from booklet.core.manuscript import Manuscript
-#from booklet.core.modifiers import *
+
+# from booklet.core.modifiers import *
 from booklet.core.converters.toimage import ToImage
 
 from booklet.core.templates.imposition import Imposition
@@ -62,8 +65,9 @@ from booklet.deprecated.converters import SigComposition, Signature
 
 if platform.system() != "Darwin":
     from tkinter import ttk
-#else:
+# else:
 #    import tkmacosx as ttk  # Mac OS specific module
+
 
 # UI-----------------------------------------------------------------------
 class Booklet:
@@ -107,7 +111,7 @@ class Booklet:
             of pages. defaults to data.re_get_ranges
         :type re_range_validation: _type_, optional
         :param re_character_validation: Regular expression to confirm valid
-            characters in page ragne input. Defaults to 
+            characters in page ragne input. Defaults to
             data.re_check_permited_character
         :type re_character_validation: _type_, optional
         :param fix: ui setting, tkinter gui window size modulation permission
@@ -286,13 +290,15 @@ class Booklet:
         )
 
     def icon_setting(self, window):
+        """
+        Add an icon to the passed window
+        """
         try:  # Linux environment tkinter does not support and makes an error
             window.iconbitmap(self.icon_path)
         except:
             pass
 
     def initiate_window(self):
-        self.window.winfo_height
         x = int((self.window.winfo_screenwidth() - self.window.winfo_width()) / 2)
         y = int((self.window.winfo_screenheight() - self.window.winfo_height()) / 2)
 
@@ -307,7 +313,7 @@ class Booklet:
 
     def popup_window(
         self,
-        text: Union[str, list[str]],
+        text: str | list[str],
         title: str,
         tpadx=10,
         tpady=20,
@@ -364,10 +370,8 @@ class Booklet:
         width,
         height,
         column_names,
-        data,
+        table_data,
         title,
-        tpadx=10,
-        tpady=2.5,
         fix=False,
         align="center",
     ):
@@ -392,9 +396,9 @@ class Booklet:
             table.column(x, width=100, anchor=align)
             table.heading(x, text=x, anchor=align)
 
-        # Data innsert
+        # Data insert
 
-        for i, d in enumerate(data):
+        for i, d in enumerate(table_data):
             table.insert(parent="", index="end", iid=i, values=d)
 
     def initiate_menu(self):
@@ -418,8 +422,6 @@ class Booklet:
             data.format_head,
             data.format_table,
             "Paper Format",
-            30,
-            2.5,
             False,
         )
         self.menu_help.add_command(label="Paper Format", command=format_window)
@@ -430,9 +432,9 @@ class Booklet:
             label="Source", command=partial(open_url, self.url_source)
         )
 
-        license = partial(
+        license_menu = partial(
             self.popup_window,
-            text=data.license,
+            text=data.license_text,
             title="License",
             tpadx=10,
             tpady=0,
@@ -440,7 +442,7 @@ class Booklet:
             scroll=True,
         )
 
-        self.menu_help.add_command(label="License", command=license)
+        self.menu_help.add_command(label="License", command=license_menu)
 
     def genbutton(self, row, column, width, height, padding, columnspan=1):
         self.Frame_button = ttk.Frame(
@@ -477,7 +479,8 @@ class Booklet:
             padding=padding,
         )
 
-        # self.input_text = ttk.Label(self.Frame_input, text="Manuscript", justify=tk.LEFT, anchor='w')
+        # self.input_text = ttk.Label(self.Frame_input, text="Manuscript",
+        #                             justify=tk.LEFT, anchor='w')
         # self.input_text.grid(row=0, column=0, sticky = tk.W, padx =3)
         self.input_entry = ttk.Entry(self.Frame_input, width=entry_width)
         self.input_button = ttk.Button(
@@ -500,10 +503,10 @@ class Booklet:
             self.Frame_input, textvariable=self.page_format, wraplengt=200
         )
 
-        self.title_label = ttk.Label(self.Frame_input, text=f"Title")
-        self.author_label = ttk.Label(self.Frame_input, text=f"Author(s)")
-        self.page_n_label = ttk.Label(self.Frame_input, text=f"Pages")
-        self.page_for_label = ttk.Label(self.Frame_input, text=f"Format")
+        self.title_label = ttk.Label(self.Frame_input, text="Title")
+        self.author_label = ttk.Label(self.Frame_input, text="Author(s)")
+        self.page_n_label = ttk.Label(self.Frame_input, text="Pages")
+        self.page_for_label = ttk.Label(self.Frame_input, text="Format")
 
         self.logo_icon = ttk.Label(self.Frame_input, image=self.logo, cursor="hand2")
         self.logo_icon.photo = self.logo
@@ -550,7 +553,8 @@ class Booklet:
             padding=padding,
         )
 
-        # self.output_text = ttk.Label(self.Frame_output, text="Output", justify=tk.LEFT, anchor='w')
+        # self.output_text = ttk.Label(self.Frame_output, text="Output",
+        #                              justify=tk.LEFT, anchor='w')
         # self.output_text.grid(row=0, column=0, sticky = tk.W, padx =3)
         self.output_entry = ttk.Entry(self.Frame_output, width=entry_width)
         self.output_entry.grid(row=1, column=0, columnspan=3, padx=3, ipadx=5)
@@ -664,7 +668,8 @@ class Booklet:
             self.icons["split"], master=self.Frame_ad_imposition
         )
 
-        # self.FrameText_impositon = ttk.Label(self.Frame_ad_imposition, text="Sheet work setting",justify=tk.LEFT, anchor='w')
+        # self.FrameText_impositon = ttk.Label(self.Frame_ad_imposition,
+        #           text="Sheet work setting",justify=tk.LEFT, anchor='w')
 
         self.blankpage_label = ttk.Label(
             self.Frame_ad_imposition, text="Blank page(s)", justify=tk.LEFT, anchor="w"
@@ -1159,7 +1164,6 @@ class Booklet:
     ):
 
         int_validation = (self.window.register(self.__int_validation), "%P")
-        int_invalid = (self.window.register(self.__int_invalid),)
 
         self.Frame_utils_misc = ttk.LabelFrame(
             master=self.tab_utils,
@@ -1372,16 +1376,14 @@ class Booklet:
         play_obj = wave_obj.play()
         play_obj.wait_done()
 
-    def __get_file_info(
-        self, path_str: str
-    ) -> Tuple[
-        Union[bool, str],
-        Union[bool, str],
-        Union[bool, int],
-        Union[bool, list[float, float]],
+    def __get_file_info(self, path_str: str) -> tuple[
+        bool | str,
+        bool | str,
+        bool | int,
+        bool | list[float, float],
     ]:
 
-        if type(path_str) != str:
+        if not isinstance(path_str, str):
             raise TypeError(
                 f"Given path must be a string variable. Current:{type(path_str)}"
             )
@@ -1543,13 +1545,16 @@ class Booklet:
             self.customformat_height_entry.config(state=tk.DISABLED)
 
     def __range_validation(self, value, event):
+        """
+        Validate the range string.
+        """
         print(event)
         text = value.replace(" ", "")
         # self.pagerange_var.set(text)
         valid = True
 
         # Empty is OK.
-        if text == "" or text == None:
+        if text == "" or text is None:
             return True
 
         # Must start with a number.
@@ -1558,43 +1563,43 @@ class Booklet:
             return False
         # Check for invalid characters.
         # Only digit, space, comma, hyphen allowed.
-        if self.character_validation_re.search(text) != None:
+        if self.character_validation_re.search(text) is not None:
             print(self.character_validation_re.findall(text))
             valid = False
 
         #
         rangelist = self.range_validation_re.findall(text)
 
-        range = 0
-        if valid == True:
+        page_range = 0
+        if valid:
             pre = 1
-            max = int(self.page_n.get())
+            max_pageno = int(self.page_n.get())
             for st in rangelist:
                 if "-" in st:
                     i_s, l_s = st.split("-")
                     i = int(i_s)
                     l = int(l_s)
-                    if (i <= pre and pre > 1) or l > max:
+                    if (i <= pre and pre > 1) or l > max_pageno:
                         valid = False
-                        print(f"{i}-{l}, pre:{pre}, max:{max}")
+                        print(f"{i}-{l}, pre:{pre}, max:{max_pageno}")
                     if i >= l:
                         if event != "focusout" and len(i_s) >= len(l_s):
                             return True
                         else:
-                            #self.pagerange_var.set(f"1-{max}")
+                            # self.pagerange_var.set(f"1-{max_pageno}")
                             valid = False
                             print(f"{i}>{l}")
-                    #pre = l
-                    range += l - i + 1
+                    # pre = l
+                    page_range += l - i + 1
                 else:
                     n = int(st)
-                    if (n <= pre and pre > 1) or n > max:
+                    if (n <= pre and pre > 1) or n > max_pageno:
                         print(f"{n}")
                         valid = False
-                    range += 1
+                    page_range += 1
 
         if valid:
-            self.page_range_size.set(range)
+            self.page_range_size.set(page_range)
             self.__event_fold_enable(True)
             #    self.pagerange_example.config(bg="#ffffff")
             #    if self.platform_mac:
@@ -1697,13 +1702,13 @@ class Booklet:
                 child.config(state=state)
 
     def __int_validation(self, value):
-        if value == "" or value == None:
+        if value == "" or value is None:
             return True
         if "-" in value:
             return False
         try:
             value = int(value)
-        except:
+        except ValueError:
             return False
         return True
 
@@ -1711,14 +1716,7 @@ class Booklet:
         print("Please enter an integer value")
 
     def __layout_validation(self, value, stored_value, event):  # focusing in
-        if value == "" or value == None:
-            return True
-        if "-" in value:
-            return False
-
-        try:
-            value = int(value)
-        except:
+        if not self.__int_validation(value):
             return False
 
         sig_pages = self.custom_imposition_sig_int.get()
@@ -1729,20 +1727,17 @@ class Booklet:
                 self.custom_sig_layout_row.set(1)
                 self.custom_sig_layout_column.set(sig_pages)
                 return False
-            else:
-                return True
-        else:
+            return True
 
-            layout_row = value
+        layout_row = value
 
-            if sig_pages % layout_row:
-                if len(str(sig_pages)) <= len(str(layout_row)):
-                    return False
-                else:
-                    return True
-            else:
-                self.custom_sig_layout_column.set(int(sig_pages / layout_row))
-                return True
+        if sig_pages % layout_row:
+            if len(str(sig_pages)) <= len(str(layout_row)):
+                return False
+            return True
+
+        self.custom_sig_layout_column.set(int(sig_pages / layout_row))
+        return True
 
     # Pass to parameters to PDF routine
     def pdf_progress_popup(self, page_range, nl, impositionbool):
@@ -1754,21 +1749,17 @@ class Booklet:
         self.icon_setting(sub_window)
 
         if impositionbool:
-            progress_length = 2 * len(page_range) 
-        else: 
+            progress_length = 2 * len(page_range)
+        else:
             progress_length = len(page_range)
 
         print("Pro_length:", progress_length)
         sub_progress = ttk.Progressbar(
-            sub_window,
-            orient="horizontal",
-            mode="determinate",
-            maximum=progress_length
+            sub_window, orient="horizontal", mode="determinate", maximum=progress_length
         )
         sub_progress.grid(column=0, row=0, padx=10, pady=20)
         progress_text = tk.StringVar(value="Start conversion")
-        sub_progress_text_label = ttk.Label(sub_window,
-            textvariable=progress_text)
+        sub_progress_text_label = ttk.Label(sub_window, textvariable=progress_text)
         sub_progress_text_label.grid(column=0, row=1, padx=10, pady=20)
 
         destorybutton = ttk.Button(
@@ -1778,11 +1769,9 @@ class Booklet:
             comman=sub_window.destroy,
             state=tk.DISABLED,
         )
-        destorybutton.grid(column=0, row=2,
-            padx=int(2 * tpadx), pady=int(2 * tpady))
+        destorybutton.grid(column=0, row=2, padx=int(2 * tpadx), pady=int(2 * tpady))
 
-        return sub_window, sub_progress, progress_text, progress_length, \
-            destorybutton
+        return sub_window, sub_progress, progress_text, progress_length, destorybutton
 
     def gen_button_action(self):
 
@@ -1879,8 +1868,8 @@ class Booklet:
         # print(blocks)
         # Generate popup window(progress bar)
 
-        ndbool = trimbool or registrationbool or cmykbool
-        printbool = sigproofbool or ndbool
+        # ndbool = trimbool or registrationbool or cmykbool
+        # printbool = sigproofbool or ndbool
 
         # page_range = get_exact_page_range(pagerange, [blankmode, blanknumber])
 
@@ -1970,19 +1959,21 @@ class Booklet:
         return 0
 
 
-if __name__ == "__main__":
-    from data import *
-
+def main():
     text_pady = 3
 
     hpbooklet = Booklet(
-        task_bar_icon,
-        homepage=homepage,
-        source=git_repository,
-        tutorial=tutorial,
+        data.task_bar_icon,
+        homepage=data.homepage,
+        source=data.git_repository,
+        tutorial=data.tutorial,
         textpady=text_pady,
-        beep_file=beep_file,
-        logo=logo,
-        icons=icons,
+        beep_file=data.beep_file,
+        logo=data.logo,
+        icons=data.icons,
     )
     hpbooklet.window.mainloop()
+
+
+if __name__ == "__main__":
+    main()

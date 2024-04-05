@@ -76,6 +76,11 @@ pip install -r requirements.txt
 
 Python module `simpleaudio` requires compilers, build tools and the
 development package `libasound2-dev` to be present to allow installation.
+To play back the `pipewire-alsa` or `pulseaudio-alsa` package will need to be installed,
+otherwise simpleaudio will error as follows:
+```
+_simpleaudio.SimpleaudioError: Error opening PCM device. -- CODE: -2 -- MSG: No such file or directory
+```
 If you are using Ubuntu you can install `build-essential` from repository.
 
 ```

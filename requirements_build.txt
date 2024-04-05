@@ -1,0 +1,3 @@
+fontTools
+Sphinx
+sphinxawesome-theme

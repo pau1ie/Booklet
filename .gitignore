@@ -8,6 +8,7 @@
 tem/*
 install_build/*
 sphinx_build/*
+documents/_build
 dist/*
 .vscode/*
 .idea

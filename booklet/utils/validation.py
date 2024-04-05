@@ -32,24 +32,6 @@ from typing import Union, NoReturn
 from pathlib import Path
 from numbers import Number
 
-
-def check_path(_path: Union[str, Path], mode: str) -> bool:
-    """_summary_
-
-    :param _path: _description_
-    :type _path: Union[str, Path]
-    :param mode: _description_
-    :type mode: str
-    :return: :code:`True` or :code:`False`
-    :rtype: bool
-    """
-    try:
-        path(_path, mode)
-        return True
-    except:
-        return False
-
-
 def path(_path: Union[str, Path], mode: str = "f") -> NoReturn:
     """_summary_
 

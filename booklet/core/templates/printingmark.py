@@ -32,11 +32,9 @@ from __future__ import annotations
 
 from copy import copy
 import io
-from math import floor
 
 # Type hint
-from typing import Union, Callable, List, Tuple, Dict, Literal
-from types import FunctionType
+from typing import Tuple, Literal, NoReturn
 from io import BytesIO, FileIO
 
 # PDF
@@ -45,10 +43,9 @@ from reportlab.pdfgen.canvas import Canvas
 
 # Project modules
 from booklet.core.manuscript import Template, Manuscript
-import booklet.utils.validation as vailidation
 from booklet.utils.conversion import mm
 from booklet.utils.color import Basis_Colors
-from booklet.utils.misc import *
+#from booklet.utils.misc import *
 
 
 class PrintingMark(Template):

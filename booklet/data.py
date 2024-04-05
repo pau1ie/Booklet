@@ -28,14 +28,16 @@
 
 from __future__ import annotations
 
+from os import path
+
 from PIL import Image
 
 from booklet.utils.misc import resources_path
 from booklet.utils.images import icon_path
-from os import path
 
-
-des = """PDF modulation for printing and press----------------------------------------------------"""
+des = (
+    """PDF modulation for printing and press----------------------------------------------------"""
+)
 epi = (
     "github: https://github.com/HornPenguin/Booklet \nsupport: support@hornpenguin.com"
 )
@@ -44,7 +46,7 @@ epi = (
 # Resources
 # -Audio file
 beep_file_name = "beep_ping.wav"
-beep_file = resources_path(beep_file_name, path.normpath("resouce/sound"))
+beep_file = resources_path(beep_file_name, path.normpath("resources/sound"))
 
 # -Images
 task_bar_icon = icon_path
@@ -82,23 +84,23 @@ about_text_path = resources_path("about", path.normpath("resources/text"))
 license_text_path = resources_path("license", path.normpath("resources/text"))
 url_text_path = resources_path("urls", path.normpath("resources/text"))
 
-with open(url_text_path, mode="r") as f:
+with open(url_text_path, mode="r", encoding="utf-8") as f:
     git_repository = f.readline()
     homepage = f.readline()
     tutorial = f.readline()
 
 about_text = []
-with open(about_text_path, "r") as f:
+with open(about_text_path, "r", encoding="utf-8") as f:
     about_list = f.readlines()
     rlist = list(filter(lambda x: x != "" and x != "\n", about_list))
     about_text += rlist
 
-license = []
+license_text = []
 
-with open(license_text_path, "r") as f:
+with open(license_text_path, "r", encoding="utf-8") as f:
     license_list = f.readlines()
     rlist = list(filter(lambda x: x != "" and x != "\n", license_list))
-    license += rlist
+    license_text += rlist
 
 
 format_head = ["Format", "width(mm)", "height(mm)"]
@@ -126,8 +128,10 @@ format_table = [
 ]
 
 PaperFormat = {"Default": "0x0"}
-for format in format_table:
-    PaperFormat[format[0]] = f"{format[1]}x{format[2]}"
+for format_definition in format_table:
+    PaperFormat[format_definition[0]] = (
+        f"{format_definition[1]}x{format_definition[2]}"
+    )
 
 
 # Note-------------------------------------

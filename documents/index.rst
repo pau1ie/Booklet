@@ -13,18 +13,22 @@ HornPenguin Booklet is a free and open source booklet generating program.
 It can reorder the pages, rotate and transform for fold signature, 
 and add printing markers for color printing.
 
-You can print your book signatures and a simple pamphlet with your home printer.
+You can print your book signatures and a simple pamphlet with your home
+printer.
 
 * Support difference signature size from 4 to 64.
 * Imposition.
 * Change page size during generating a signature.
-* Left riffling direction is supported for old Asian, Hebrew, and Arabic bookbindings.
+* Left riffling direction is supported for old Asian, Hebrew, and
+  Arabic bookbindings.
 * Printing markers: trim, CMYK, signature proofs are supported.
 
 You can see basic and advanced tutorials in :ref:`Usage <usage_label>`.
-Please read a :ref:`License <license>` if you want to use, contribute, or distribute to other place.
+Please read the :ref:`License <license>` if you want to use, contribute,
+or distribute this program.
 
-If you want to contribute to this project see :ref:`Development Guide <develop_guide>`.
+If you want to contribute to this project see the
+:ref:`Development Guide <develop_guide>`.
 
 
 .. toctree::

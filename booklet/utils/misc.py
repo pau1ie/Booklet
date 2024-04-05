@@ -26,17 +26,17 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import os, sys
+import os
+import sys
 from pathlib import Path
-from typing import Union, Tuple, NoReturn
-from tempfile import _TemporaryFileWrapper as TempFile
+from typing import NoReturn
 import tempfile
 
 import webbrowser
 
 
 # system related routine
-def resources_path(rel_path: str, dir: str) -> str:
+def resources_path(rel_path: str, directory: str) -> str:
     """Get absolute resource path to use temper directory.
 
     :param rel_path: Relative path that used inside of codes
@@ -53,7 +53,7 @@ def resources_path(rel_path: str, dir: str) -> str:
     except Exception:
         base_path = os.path.abspath(".")
 
-    return os.path.join(base_path, dir, rel_path)
+    return os.path.join(base_path, directory, rel_path)
 
 
 # Open webbrowser with a given url
@@ -140,9 +140,6 @@ class NamedTempFile:
 
     def readlines(self, *args, **kwargs):
         return self.stream.readlines(*args, **kwargs)
-
-    def writeable(self):
-        return self.stream.writable()
 
     def write(self, *args, **kwargs):
         return self.stream.write(*args, **kwargs)

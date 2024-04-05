@@ -28,10 +28,12 @@
 
 
 # Python standard
-import io, tempfile
+import os
+import tempfile
 from numbers import Number
 from decimal import Decimal
-from math import log2, log, floor, perm
+from math import log2, log
+from typing import Tuple, Union
 
 # PDF
 import pypdf
@@ -41,12 +43,13 @@ from booklet.dependency import img2pdf
 # Project modules
 from booklet.core.manuscript import Manuscript, Converter
 from booklet.utils import validation
-from booklet.utils.misc import *
+#from booklet.utils.misc import *
 from booklet.utils.permutation import Permutation
 from booklet.utils import matrix as Matrix
 
 
 class SigComposition:  # Fix all the permutation routines. Currnet is not vaild option
+    "Structure of pages for various folding options"
     __page_map = {
         4: [[4, 1], [2, 3]],
         8: [[8, 1, 5, 4], [2, 7, 3, 6]],
@@ -156,30 +159,6 @@ class SigComposition:  # Fix all the permutation routines. Currnet is not vaild 
             )
             self._page_imposition = self.__page_impose_layout(self._leaves_gathered)
 
-    @classmethod
-    def from_permutation(
-        cls, permute: Permutation, insert=1, custom=False, layout=(1, 1)
-    ):
-        if not isinstance(permute, Permutation):
-            raise TypeError(f"Must be a permutation type, {type(permute)}")
-        sig_leaves = permute.n
-        if sig_leaves % 2:
-            raise ValueError("Must be an even length permutation")
-
-        if custom:
-            custom_tuple = (custom, permute.plist, layout)
-        else:
-            custom_tuple = custom
-        return cls(sig_leaves, insert, custom_tuple)
-
-    @classmethod
-    def from_custom_composition(cls, lists: Union[list, tuple], layout):
-        if isinstance(lists, list, tuple):
-            length = len(lists)
-        if isinstance(lists[0], list, tuple):
-            length = len(lists[0]) + len(lists[1])
-        return cls(length, custom=(True, lists, layout))
-
     @property
     def leaves(self):
         return self._leaves_total
@@ -252,7 +231,7 @@ class SigComposition:  # Fix all the permutation routines. Currnet is not vaild 
             row = int(layout[0])
             column = int(layout[1])
         except:
-            raise ValueError(f"Values must be integer, {type(row)} {type(column)}")
+            raise ValueError(f"Values must be integer, {type(layout[0])} {type(layout[1])}")
 
         if row <= 0 or column <= 0:
             raise ValueError("Must be positive integer")

@@ -2,40 +2,75 @@
 Terms of Book and Printing
 ============================
 
-This document describes basic introduction to bookbinding and printing.
-See detailed descriptions, algorithms and implementations in each document of :ref:`Features <features>`.
+This document describes basic bookbinding and printing terms.
+More detailed descriptions, algorithms and implementations are contained
+in :ref:`Features <features>`.
+
 
 Shape and Structure of Book
 ==================================
 
-Bookbinding is a work of binding materials to make a book. 
-Including historical approach, rolled scroll can be included, but in this chapter common style of book will be treated.
-It is called *Codex* style. Codex is 
-In a view of bookbinding, book, codex, is an object which is composed of multiple *signature*.
+Bookbinding is the process of binding materials to make a book. To
+discuss how to make a book we need to agree how terms are defined.
+
+
+Page
+----
+
+A page is defined as one side of a leaf. So where pages are numbered,
+each page has it's own number.
+
+
+Leaf
+----
+
+A leaf contains two pages, one on each side.
+
+
+Sheet
+-----
+
+A piece of paper. The fact a sheet of paper can be cut into smaller
+sheets means that we need to be specific about what type of sheet
+we are referring to. Inside a section a sheet is two leaves folded
+and usually sewn together with the other sheets in the section. A larger
+sheet may have been used being folded and cut as described below
+to create these smaller sheets that are part of a section.
+
 
 Signature
 -----------
 
+A group of sheets sewn together. 
 The **signature** is a contents block of a book, pamphlet, or booklet. 
-That is, *a group of sheets* not separated by its contents, but a prefixed number of sheets. 
-There are some synonyms, **section**, and **gathering**. This document will use **signature**.
+There are some synonyms, **section**, and **gathering**. This document
+will use **signature**.
 
-Pages compose a signature and the signatures compose a book, booklet, ..., et cetera.
-A single page can become a signature and a single singnature can compose a single book or booklet, (usually booklet).
+Pages compose a signature and the signatures compose a book, booklet,
+..., et cetera.
+A single page can become a signature and a single singnature can compose
+a single book or booklet, (usually booklet).
 
-Why we need signature in bookbinding? 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-If you have made ring or stapler binding in home or local printing center, you might not think 
-it is not needed to prepare content block by prefixed number of leaves.  
-However, if pages exceeds more than hundreds, you cannot prepare all contents to bind at once.
-With some efforts, it might be possible but it is a waste of time and finance resources not only for manufacturers but also for hobbists.
+Text Block
+----------
 
-Therefore, people make small sections first and bind them at final stage for large number of pages. 
-In addition, there is a manufacturing reason. Cutting and folding are always easier than combining and gluing materials in manufacture process.
-Consequently, printing with raw paper roll and cutting them is more effciency than gathering small printed papers.
-Even you are printing manuscripts with home printer, folio type printing can reduce significant efforts than single leaf printing in bookbinding. 
-That is why using a **signature** in bookbinding. 
+One or more signatures are gathered together forming the text block,
+which is the complete contents of the book.
+
+
+Why are signatures required in bookbinding? 
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Single-signature books are limited in size, as each sheet needs to fit
+around the other folded sheets. The more sheets that are added to a
+section, the more the inside pages need to be trimmed to make the leaves
+line up with each other.
+
+If books are being constructed from larger sheets of paper which are then
+folded and cut, it is often convenient to form a signature from this process.
+The sizes are listed below.
+
 
 Types of signature
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -44,53 +79,71 @@ By the number of leaves
 """"""""""""""""""""""""""""
 Commonly used types are next,
 
-+-------------------+---------+
-|Name               |Leaves   |
-+===================+=========+
-|folio              |2        |
-+-------------------+---------+
-|quartos            |4        |
-+-------------------+---------+
-|octavo             |8        |
-+-------------------+---------+
-|duodecimo(12mo)    |24       |
-+-------------------+---------+
-|16mo               |32       |
-+-------------------+---------+
-|18mo               |36       |
-+-------------------+---------+
-|32mo               |64       |
-+-------------------+---------+
-|64mo               |128      |
-+-------------------+---------+
++-------------------+-------+---------+-------+
+|Name               |Pages  |Leaves   | Folds |
++===================+=======+=========+=======+
+|folio              |4      |2        | 1     |
++-------------------+-------+---------+-------+
+|quartos            |8      |4        | 2     |
++-------------------+-------+---------+-------+
+|octavo             |16     |8        | 3     |
++-------------------+-------+---------+-------+
+|duodecimo(12mo)    |48     |24       | \*    |
++-------------------+-------+---------+-------+
+|16mo               |64     |32       | 5     |
++-------------------+-------+---------+-------+
+|18mo               |72     |36       | \*    |
++-------------------+-------+---------+-------+
+|32mo               |128    |64       | 6     |
++-------------------+-------+---------+-------+
+|64mo               |256    |128      | 7     |
++-------------------+-------+---------+-------+
 
+\* See Extended type below.
 
-Above names just indicate leaves of each signature but they have a meaning of booksize.
-They are determined with their country's standard the raw paper size, if there is no prior name, or forehead paper name.
-For example, Crown quartos size, 195 x 254 (mm), is a quarter of Crown paper size, 508 x 381 (mm).
+While the above mentioned names indicate leaves of each signature,
+they can also indicate the size of the book, if the original paper
+size is known. The country's standard the raw paper size is used,
+unless stated otherwise.
+
+For example, Crown quartos size, 195 x 254 (mm), is a quarter of Crown
+paper size, 508 x 381 (mm).
+
 
 Imposition
 -------------
 
-The imposition is a locating work of pages to paper and the result of the work.
-Unless you binding book in old Asia style (their method can use single paper as a basic signature), 
-you must print the signature considering fold action.
-This is why the manuscript for a book should have a number of pages which is a multiple of 4.
+Imposition is the process of printing pages on to a large sheet such that
+once it is folded the pages appear in the correct order.
+Apart from book binding in the old Asian style (this method can use single 
+paper as a basic signature), the manuscript for a book
+has a number of pages which is a multiple of 4.
 
-By the folding direction and order, its imposition layout on larger paper is vary. 
-If you have an experience of map folding subject in origami geometry, it will be friendly. 
-However, it is not as complex as them, because of the characteristic of signature folding.
-All types of signature after folding must be its one side covers all centers of connected two leaves.
-This makes permitted folding to be restricted next.
+Varying the direction and order of the folds will require changing 
+the imposition layout on the larger paper to ensure the pages end
+up in the correct order.
+If you have experience of map folding in origami geometry, this will
+be familiar. 
+However, signature folding is not as complex, because the signatures
+must end up with a centre fold where they are all sewn together. 
+
 
 **Signature folding**
 
-* Every creases must be perpendicular or parallel to each other.
-* Each fold must be in next two cases.
-   1. (\*) Perpendicular to the previous fold line and fold all layer at once.
-   2. (\**), Parallel to the previous fold line and fold all layer at once.
-   3. (\*\*\*), Parallel to the previous fold line. If fold partial layers than the other must be folded in same stage. 
-      Sequential parallel foldings can include half folding of all layer, in this case, there must be other parallel folding steps.
+* Every fold must be perpendicular or parallel to every other fold.
+* Each fold must be:
+   1. (\*) Perpendicular to the previous fold line and fold all layers.
+   2. (\**), Parallel to the previous fold line and fold all layers.
+   3. (\*\*\*), Parallel to the previous fold line. If not all layers
+      are folded, the rest must be folded in the same stage. 
+      Sequential parallel folds can include a proportion of the layers, 
+      in which case, there must be other parallel folding steps.
+
+      For example, a sheet can be folded into three in concertina
+      (zig zag) style by making a mountain fold and a valley fold.
+      Or it can be folded into three in envelope style by making
+      two parallel valley folds.
+
 * The last fold must be (\*) or (\*\*) type.
 
 | (\*), (\**) : Doubling previous grids.
@@ -100,13 +153,14 @@ This makes permitted folding to be restricted next.
 Standard type
 ^^^^^^^^^^^^^^^^^
 Repetation of 1st type folding only.
-Leaves = :math:`2^n`, 2, 4, 8, 16, 32, 64, 128, ... .
+Leaves = :math:`2^n`, i.e. 2, 4, 8, 16, 32, 64, 128, ... .
 
 
 Extended type
 ^^^^^^^^^^^^^^^^^
 
-At least one step is 2nd type folding, this allows us to compose addtional prime numbers for divisor of leaves number.
+At least one step is 2nd type folding, this allows us to compose
+addtional prime numbers for divisor of leaves number.
 
 Example: 6, 12 
 
@@ -118,25 +172,40 @@ Example: 6, 12
 
 :math:`6 = 1 \times 3 \times 2`
 
+In other words, the sheet is folded into three, then folded in half.
 
-Signature composition
+A sheet can be folded into three concertina wise, or using an envelope
+fold. The pages end up in different orders depending on the folds made
+and their order, and this needs to be taken into account during
+imposition.
+
+
+Signature Composition
 --------------------------
 
-As written above, a signature is governed by its number of sheets. 
-Single paper signature is :math:`2` sheets signature with dual side printing.
-The number of sheets of signature must be a multiple of :math:`4`, practically considering *fold*.
-Therefore, permitted numbers are :math:`4, 8, 16, 32, 64` and :math:`12, 24`.
-:math:`12, 24` signatures differ in its fold progress with :math:`4, 8, 16, 32, 64`.
-Bigger sheets can be used :math:`>64` to make a single signature, but it is not practical.
+As mentioned above, the size of a signature is governed by the number of
+sheets it contains. A single sheet signature is :math:`2` pages with
+duplex printing. The number of pages in a signature must be a multiple of
+:math:`4`, considering the *fold*.
+Therefore, permitted numbers of pages per signature are
+:math:`4, 8, 16, 32, 64` and :math:`12, 24`.
+:math:`12, 24` signatures have diffent folding processes from 
+:math:`4, 8, 16, 32, 64`, as mentioned above.
+Bigger sheets could be used :math:`>64` to make a single signature, but it
+is not practical.
 
 
 .. image:: ../_static/gathering_inserting.png
 
 There are two types of methods to combine signatures, 
-**inserting** and **gathering**. There are no differences among them after cutting their edges, but the order of pages are differ by type.
-The *gathering* does not affect to order of each signature but *inserting* does to match the correct ordering of pages. 
+**inserting** and **gathering**. The signatures will look the same once
+the edges are cut, but the order the pages are printed on the larger
+sheet will differ depending on how they are folded.
+The *gathering* does not affect to order of each signature but
+*inserting* does to match the correct ordering of pages. 
 
-The :math:`n` sheets signature is composed of :math:`i` time inserted :math:`f` sheets signature.
+The :math:`n` sheets signature is composed of :math:`i` time inserted
+:math:`f` sheets signature.
 
 .. math:: 
     n = i \times f.
@@ -149,13 +218,14 @@ For example, :math:`16` sheets signature has next variation for same types.
 * :math:`2 \times 8`
 * :math:`4 \times 4`
 
-If we permit combination of difference types.
+If we permit combinations of difference types.
 
 * :math:`[4, 4, 8]`
 * :math:`[4, 8, 4]`
 * :math:`[8, 4, 4]`
 
-Ordering of combination in :math:`[,]` is important. The latter cases are called **deep type** signature in book of T.B. Wiliams (1895).
+Ordering of combinations in :math:`[,]` is important. The latter cases
+are called **deep type** signature in book of T.B. Wiliams (1895).
 With deep type, we can make every even number signature for example,
 
 .. math::
@@ -168,21 +238,29 @@ Riffle direction
 
 .. image:: ../_static/riffle.png
 
-**Riffle direction** is a direction of riffling while you read the contents of a book.
-It depends on the reading direction of language. The most common direction is a horizontal, from left top to right bottom(HLTRB) direction.
-There were various reading directions by the language system. Most of them are not used in the recent era, but from left to right reading direction
-frequently used in many situations more than people think. 
+**Riffle direction** is a direction of riffling (i.e. page turning) 
+while reading the contents of a book.
+It is dependant upon the reading direction of language. The most common
+direction is a horizontal, from left top to right bottom (HLTRB).
+There were various reading directions by the language system. While some
+are no longer used, other reading directions are used more
+frequently than one might think. 
 
-Belows are uncommon example languages in reading direction.
+Below are examples of languages with different reading directions.
 
 * Asia, Korea, Japan, China ... etc 
     
-    East Asians used **VRTLB** (vertical, from right top to left bottom) system. 
-    Now, vertical writing is rarely seen in modern texts in Asia (it is different by the country), but as a design or a research work, they are still adopted in many works.
-    For example, some Japanese mangas use vertical writing in their speech bubbles. There is a good different point in the speech bubble by the writing direction in Japan and Korea. 
-    Japan's speech bubbles are vertically long while Korea's are horizontally long. 
-    Korea also uses vertical writing once, but in the modern era is not as popular as in Japan. This difference is affecting to their speech bubble shape in comics.
-    It is one example that how the cultural difference, in this case writing direction, is visually expressed.
+    East Asians used a **VRTLB** (vertical, from right top to left
+    bottom) system. 
+    Nowadays, vertical writing is rarely seen in modern texts in Asia (it
+    varies by country), but it is still used in design or a research works.
+    For example, some Japanese manga use vertical writing in speech bubbles.
+    Thgus speech bubbles are different shapes depending on the labguage.
+    Japanese speech bubbles are vertically long while Korean ones are horizontally long. 
+    Korea also used vertical writing histortically, but in the modern era it is
+    not as popular as in Japan.
+    This is an example of how the cultural difference, in this case writing
+    direction, is visually expressed.
 
 * Hebrew and Arabic 
     
@@ -195,15 +273,19 @@ Belows are uncommon example languages in reading direction.
 
 * Elder Island script, Ogham scripts 
     
-    It also has an abnormal direction. Its direction is vertically from bottom to top.
+    These also have an abnormal direction, vertically from bottom to top.
 
 
-From top to bottom, or from bottom to top are not affected by the order of pages if you riffle horizontally.
-However, whether the reading direction is LR or RL affects the page ordering considering reading efficiency.
+Top to bottom, or bottom to top are not affected by the order of pages if
+you riffle horizontally.
+However, whether the reading direction is LR or RL the page ordering is 
+affected considering reading efficiency.
 
-The default setting of HornPenguin Booklet is a LR direction and supports *RL*.
+The default setting of HornPenguin Booklet is a LR direction. *RL* is
+also suppported.
 
-Supporting *RL* is not complicated. Just reverse order the pages before applying to rearrange transformation to the pages.
+Supporting *RL* is not complicated. Just reverse order the pages before
+applying to rearrange transformation to the pages.
 
 
 Printing markers
@@ -214,9 +296,9 @@ Signature proof
 
 .. image:: ../_static/proof.png
 
-**Signature proof** is a ordering proof marker on the spine of signatures. It helps for people to arrange the signatures in right order
-and check missing signatures.
-
+**Signature proof** is a ordering proof marker on the spine of 
+signatures. They ease the correct ordering of signatures
+and make it easier to check if signatures are missing.
 
 
 Crop marker
@@ -228,21 +310,28 @@ Trim line indicator.
 Registration marker
 -----------------------
 
-**Registration marker** is added to check the registration of color printing of printing machine. 
-Its color looks like the normal black color (CMYK(0, 0, 0, 1)) but actually, it is a special color called
-*registration black*, CMYK code is (1, 1, 1, 0). If they are perfectly fitted, it will look like normal black color.
+A **Registration marker** is added to check the registration of color
+printing of printing machine.
+Its color looks like the normal black color (CMYK(0, 0, 0, 1)) but 
+actually, it is a special color called
+*registration black*, CMYK code is (1, 1, 1, 0). If Cyan, Magenta
+and Yellow are perfectly in proportion, the registration mark will
+appear black.
 
 
 Further reading
 --------------------
 
 
-* Matt T. Roberts and Don Etherington, Bookbinding and the Conservation of books: A Dictionary of Descriptive Terminology, Drawings by Margaret R. Brown
+* Matt T. Roberts and Don Etherington, Bookbinding and the Conservation
+  of books: A Dictionary of Descriptive Terminology, Drawings by Margaret
+  R. Brown
 
-General and advanced informations of bookbinding can be found on dictionary written by Matt T. Roberts and Don Etherington.
-`Online version <https://cool.culturalheritage.org/don/>`_ is available. 
+General and advanced information on bookbinding can be found in
+the dictionary written by Matt T. Roberts and Don Etherington.
+An `online version <https://cool.culturalheritage.org/don/>`_ is
+available. 
 
-* T.B. Wiliams, Hints on imposition. An illustrated guide for printer and pressman in the construction of book-forms, 1895
-
-
-
+* T.B. Wiliams, Hints on imposition. An illustrated guide for printer and
+  pressman in the construction of book-forms, 1895. An `online version
+  <https://archive.org/details/hintsonimpositio00will/mode/2up>` is available.

@@ -13,10 +13,10 @@
 # Add document
 import os
 import sys
+from pathlib import Path
 #sys.path.insert(0, os.path.abspath('.'))
 #sys.path.insert(0, os.path.join(os.path.abspath('..'), "booklet"))
 sys.path.insert(0, os.path.abspath('..'))
-from pathlib import Path
 
 
 news_path = Path("../NEWS")
@@ -84,5 +84,3 @@ html_theme_options = {
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
-
-
