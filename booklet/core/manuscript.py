@@ -65,9 +65,8 @@ class Manuscript:
     @property
     def pages(self) -> list[pypdf.PageObject]:
         pages = []
-        for i in range(0, len(self.page_range)):
-            page_num = self.page_range[i] - 1
-            pages.append(self.pdf.pages[page_num])
+        for page_num in self.page_range:
+            pages.append(self.pdf.pages[page_num-1])
         return pages
 
     def __del__(self, *args):

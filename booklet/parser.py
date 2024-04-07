@@ -154,7 +154,7 @@ cli_parser.add_argument(
     help="The page range to moldulate in the input file. Example: 1-3, 10, 14-20.",
 )
 cli_parser.add_argument(
-    "--split", action="store_true", help="split pdf pages with each signatures."
+    "--split", action="store_true", help="Output one file per signature."
 )
 # ToImage Feature
 cli_parser.add_argument(

@@ -156,7 +156,8 @@ class Imposition(Template):
         tem_pdf_byte.seek(0)
         proof_templates = pypdf.PdfReader(tem_pdf_byte)
 
-# Add the signature proof
+# Add the signature proof. Currently it adds too many - doesn't take
+# inserted pages into account.
         for i in range(0, template_pages):
             proof_page = proof_templates.pages[i]
             proof_page.mediabox.lower_left = (proof_position[0], heights[i])

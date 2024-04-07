@@ -1367,7 +1367,7 @@ class Booklet:
 
     # Internal routines---------------------------
     def __beep(self) -> NoReturn:
-        """Generate bepp sound
+        """Generate beep sound
 
         Returns:
             NoReturn: It takes 0.5 sec for beeping (ping sound).
@@ -1880,8 +1880,8 @@ class Booklet:
 
         default_gap = 5
         manuscript = Manuscript(
-            input=input_file,
-            output=output_path,
+            input_file=input_file,
+            output_file=output_path,
             filename=filename,
             page_range=pagerange,
         )
@@ -1926,7 +1926,13 @@ class Booklet:
             manuscript.modifier_register(modifier)
         mode = "safe"
         manuscript.update(file_mode=mode)
-        manuscript.save_to_file(split=splitbool)
+
+        if splitbool:
+            print(f"_sig_composition: {_sig_composition.composition}")
+            manuscript.save_to_file(split=_sig_composition.composition[0]*2)
+        else:
+            manuscript.save_to_file()
+        
         del manuscript
 
         # old code

@@ -267,7 +267,8 @@ if __name__ == "__main__":
             manuscript.modifier_register(modifier)
         manuscript.update(do="all", file_mode="unsafe")
         if args.split:
-            manuscript.save_to_file(split=_sig_composition)
+            print(f"_sig_composition: {_sig_composition.composition}")
+            manuscript.save_to_file(split=_sig_composition.composition[0]*2)
         else:
             manuscript.save_to_file()
 
