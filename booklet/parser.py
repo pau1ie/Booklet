@@ -225,7 +225,6 @@ cli_parser.add_argument(
          "signature. colorcode is a hex code. Defaults to #729fcf.",
 )
 # Printing Mark Feature
-cli_parser.add_argument("--trim", action="store_true", help="trim.")
 cli_parser.add_argument(
     "--crop", action="store_true", help="add crop marker in imposition pdf."
 )

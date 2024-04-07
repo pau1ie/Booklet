@@ -44,7 +44,8 @@ def split_list(list1d: list, n: int, mode="l") -> list:
     if mode == "n":
         if length_list % num != 0:
             raise ValueError(
-                "The length of the given list and the sublist length must have a divider relationship."
+                "The length of the given list and the sublist length "
+                "must have a divider relationship."
             )
         num = int(length_list / num)
         mode = "l"
@@ -92,5 +93,3 @@ def reshape(list1d: list, shape) -> list[list]:
     if size1d != shape[0] * shape[1]:
         raise ValueError("The list length and shape are not matched each other.")
     return split_list(list1d, shape[0], mode="n")
-
-

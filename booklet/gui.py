@@ -1844,17 +1844,22 @@ class Booklet:
         )
 
         print("Variable:\t value")
-        print(f"input file:\t{input_file} ")
-        print(f"Output path:\t{output_path} ")
-        print(f"page range:\t\t{pagerange} ")
-        print(f"leaves:\t{[nl, nn, ns]} ")
-        print(f"fold:\t{foldbool}")
-        print(f"riffle:\t{rifflebool}")
-        print(f"format:\t [{formatbool},{format_width} ,{format_height} ]")
-        print(f"imposition:\t{impositionbool}")
-        print(f"blank:\t [{blankmode},{blanknumber}]")
-        print(f"split:\t{splitbool}")
-        print(f"sigproof:\t[{sigproofbool},{sig_color}]")
+        print(f"input file:          {input_file} ")
+        print(f"Output path:         {output_path} ")
+        print(f"page range:          {pagerange} ")
+        print(f"Adding:              {blanknumber} blank pages to the {blankmode}")
+        print("Signature Composition:")
+        print(f"   Pages:            {nl} per signature")
+        print(f"   inserting         {nn} x {ns} page sub signmatures")
+        print(f"riffle:              {rifflebool}")
+        print(f"format:              {formatbool},{format_width} ,{format_height}")
+        print(f"fold:                {foldbool}")
+        print(f"imposition:          {impositionbool}")
+        print(f"split per signature: {splitbool}")
+        print(f"sigproof:            {sigproofbool} colour={sig_color}]")
+        print(f"crop/trim:           {trimbool}")
+        print(f"reg                  {registrationbool}")
+        print(f"cmyk                 {cmykbool}")
 
         # ----------------------------------------------------------------
 
@@ -1902,7 +1907,7 @@ class Booklet:
             imposition_layout=_sig_composition,
         )
         printing_mark = PrintingMark(
-            on=True if trimbool or registrationbool or cmykbool else False,
+            on=bool(trimbool or registrationbool or cmykbool),
             margin=margin,
             crop=trimbool,
             reg=registrationbool,

@@ -115,13 +115,13 @@ if __name__ == "__main__":
     if args.console:  # console mode
 
         # Path validation
-        inputfile = ""
+        input_file = ""
         outputpath = ""
         pagerange = ""
         if args.inputfile is not None:
-            inputfile = args.inputfile
+            input_file = args.inputfile
         elif args.input is not None:
-            inputfile = args.input[0]
+            input_file = args.input[0]
         elif args.format_help is None:
             raise ValueError("No input file")
 
@@ -137,11 +137,11 @@ if __name__ == "__main__":
             if args.name is not None:
                 name = args.name
             else:
-                name_formatted = os.path.split(inputfile)[1]
+                name_formatted = os.path.split(input_file)[1]
                 name = name_formatted.split(".pdf")[0] + "_HP_BOOKLET" + ".pdf"
             outputpath = os.path.join(outputpath, name)
 
-        pre_pdf = pypdf.PdfReader(inputfile)
+        pre_pdf = pypdf.PdfReader(input_file)
         page_max = len(pre_pdf.pages)
         default_size = [
             float(pre_pdf.pages[0].mediabox.width),
@@ -197,27 +197,22 @@ if __name__ == "__main__":
         printbool = args.crop or args.registration or args.cmyk or sigproof[0]
 
         # Print work info
-        print(f"Input:            {inputfile}")
-        print(f"output:           {outputpath}")
-        print(f"page range:       {pagerange}")
-        print(f"Adding            {blank[1]} blank pages to the {blank[0]}")
+        print(f"Input:               {input_file}")
+        print(f"output:              {outputpath}")
+        print(f"page range:          {pagerange}")
+        print(f"Adding               {blank[1]} blank pages to the {blank[0]}")
         print("signature composition:")
-        print(f"  Pages           {nl} per signature")
-        print(f"  inserting       {nn} x {ns} page sub signatures")
-        print(f"riffle direction: {args.riffle_direction}")
-        print(f"paper format:     {args.format} {format_mm[0]}x{format_mm[1]} (mm)")
-        print(f"fold:             {args.fold}")
-        print(f"imposition:       {args.imposition}")
-        print(f"split per signature:{args.split}")
-
-        print("Printing-----------------")
-        sigproof_str = f"{sigproof[0]}"
-        if sigproof[0]:
-            sigproof_str += f" color={args.sigproof}"
-        print(
-            f"trim:{args.trim}, registration:{args.registration},"
-            f" cmyk:{args.cmyk}, sigproof: {sigproof_str}"
-        )
+        print(f"  Pages              {nl} per signature")
+        print(f"  inserting          {nn} x {ns} page sub signatures")
+        print(f"riffle direction:    {args.riffle_direction}")
+        print(f"paper format:        {args.format} {format_mm[0]}x{format_mm[1]} (mm)")
+        print(f"fold:                {args.fold}")
+        print(f"imposition:          {args.imposition}")
+        print(f"split per signature: {args.split}")
+        print(f"sigproof:            {sigproof[0]} colour={args.sigproof}")
+        print(f"crop/trim:           {args.crop}")
+        print(f"reg                  {args.registration}")
+        print(f"cmyk                 {args.cmyk}")
 
         if not args.y:
             print("Continue?(Y/N):")
@@ -234,13 +229,16 @@ if __name__ == "__main__":
         default_gap = 5
         default_margin = 43
 
-        print(f"inputfile:{inputfile}, outputpath:{outputpath}")
+        print(f"input_file:{input_file}, outputpath:{outputpath}")
         manuscript = Manuscript(
-            input=inputfile, output=os.path.dirname(outputpath),
-            filename=os.path.basename(outputpath), page_range=pagerange
+            input_file=input_file,
+            output_file=os.path.dirname(outputpath),
+            filename=os.path.basename(outputpath),
+            page_range=pagerange
         )
 
-        toimage = ToImage(toimage=toimagebool, dpi=300)
+        toimage = ToImage(toimage=toimagebool, dpi=600)
+
         signature = Signature(
             sig_composition=_sig_composition,
             blank_mode=blankmode,
@@ -258,6 +256,7 @@ if __name__ == "__main__":
             imposition_layout=_sig_composition,
         )
         printing_mark = PrintingMark(
+            on=bool(args.crop or args.registration or args.cmyk),
             margin=default_margin,
             crop=args.crop,
             reg=args.registration,

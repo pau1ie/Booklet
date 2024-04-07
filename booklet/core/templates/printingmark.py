@@ -25,17 +25,18 @@
 # CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
+"""
+Adds printing marks to the final document.
+"""
 from __future__ import annotations
 
 # Python standard
 
-from copy import copy
+from copy import copy, deepcopy
 import io
 
-# Type hint
+# Type hintcopy
 from typing import Tuple, Literal, NoReturn
-from io import BytesIO, FileIO
 
 # PDF
 import pypdf
@@ -45,6 +46,7 @@ from reportlab.pdfgen.canvas import Canvas
 from booklet.core.manuscript import Template, Manuscript
 from booklet.utils.conversion import mm
 from booklet.utils.color import Basis_Colors
+from booklet.utils.matrix import transpose
 #from booklet.utils.misc import *
 
 
@@ -75,11 +77,13 @@ class PrintingMark(Template):
         direction: bool = True
     ):
 
-        self.on = on if type(on) == bool else False
-        self.margin = margin if margin != None else 43
+        self.on = on if isinstance(on, bool) else False
+        self.margin = margin if margin is not None else 43
         self.crop = bool(crop)
         self.reg = bool(reg)
         self.cmyk = bool(cmyk)
+        self.reg_l = 0
+        self.manu_paper_format = None
 
         super().__init__(direction=True)
 
@@ -106,9 +110,10 @@ class PrintingMark(Template):
         y = 2 * self.margin + height
         return x, y
 
-    def __draw_crop_lines(self, canvas: Canvas, positions: list = []) -> bool:
+    def __draw_crop_lines(self, canvas: Canvas, positions: list = None) -> bool:
+        "Add crop lines into margin if requested"
         if self.crop:
-            if len(positions) == 0:
+            if positions is None or len(positions) > 0:
                 positions = self.___get_crop_line_positions(self.manu_paper_format)
             canvas.setLineWidth(0.5 * mm)
             canvas.lines(positions)
@@ -116,14 +121,14 @@ class PrintingMark(Template):
         return False
 
     def __draw_registration(
-        self, canvas: Canvas, ratio: float = 0.8, positions: list = []
+        self, canvas: Canvas, ratio: float = 0.8, positions: list = None
     ) -> bool:
-        self.reg_l = 0
+        "Draw registration mark if requested"
         pagesize = self.manu_paper_format
         if self.reg:
             self.reg_l = l = ratio * self.margin
             center = self.margin / 2
-            if len(positions) == 0:
+            if positions is None or len(positions) == 0:
                 positions = self.___get_registeration_positions(l, center, pagesize)
             for position in positions:
                 self.___draw_registration_mark(
@@ -172,7 +177,7 @@ class PrintingMark(Template):
 
             if not vertical:
                 column, row = row, column
-                color_map = List12dim.transpose(color_map)
+                color_map = transpose(color_map)
 
             for i in range(0, row):
                 for j in range(0, column):
@@ -192,11 +197,10 @@ class PrintingMark(Template):
                         fill=1,
                     )
                     canvas.restoreState()
-            origin_s
-            for k in range(0, len(color_sequence)):
-                i, j = (0 if vertical else k, k if vertical else 0)
+
+            for l, color in enumerate(color_sequence):
+                i, j = (0 if vertical else l, l if vertical else 0)
                 square_coordinate = (origin_s[0] + i * length, origin_s[1] + j * length)
-                color = color_sequence[k]
                 c, m, y, k = color
                 canvas.saveState()
                 canvas.setLineWidth(0)
@@ -285,7 +289,8 @@ class PrintingMark(Template):
             space_size = (self.margin - 2 * pa, ver - 2 * pa_t)
             origin = [0, self.margin * 1.5 + self.reg_l + pa_t]
 
-        # Fit 2x10, 1x20 to the empty space and calculate square size(min(width, height) respectively)
+        # Fit 2x10, 1x20 to the empty space and calculate
+        # square size(min(width, height) respectively)
         # and choose bigger size
         # 2x10 case
         if vertical:
@@ -315,7 +320,6 @@ class PrintingMark(Template):
         else:
             origin[0] = padding
 
-        # origin_mixed = (self.margin+hor+2*self.reg_l+pa, self.margin+pa) if vertical else (self.margin +pa, self.margin+ ver + 2*self.margin+ pa)
         origin_mixed = copy(origin)
         if ver < hor:
             origin_mixed[1] = self.margin * 1.5 + pagesize[1] - square_length * 0.5
@@ -389,7 +393,11 @@ class PrintingMark(Template):
 
     def generate_template(
         self, manuscript: Manuscript
-    ) -> Tuple[pypdf.PdfFileReader, BytesIO]:
+    ) -> Tuple[pypdf.PdfReader, io.BytesIO]:
+        """
+        Generates the template PDF, i.e. the page with all the printing
+        marks on it but otherwise blank.
+        """
         self.manu_paper_format = manuscript.file_paper_format
         paper_format = self.__get_paper_dim(self.manu_paper_format)
 
@@ -406,7 +414,7 @@ class PrintingMark(Template):
         printing_template.save()
 
         tem_byte.seek(0)
-        template_pdf = pypdf.PdfFileReader(tem_byte)
+        template_pdf = pypdf.PdfReader(tem_byte)
 
         return template_pdf, tem_byte
 
@@ -417,17 +425,17 @@ class PrintingMark(Template):
         if not self.on:
             pass
         else:
-            new_pdf, new_file = self.get_new_pdf(index, manuscript, file_mode)
-            template_pdf, tem_byte = self.generate_template(manuscript)
+            new_pdf, new_file = self.get_new_pdf(index, manuscript.tem_directory.name, file_mode)
+            template_pdf, _ = self.generate_template(manuscript)
             template = template_pdf.pages[0]
-            for i, page in enumerate(manuscript.pages):
-                temp_page = copy(template)
-                page.addTransformation(
+            for page in manuscript.pages:
+                temp_page = deepcopy(template)
+                page.add_transformation(
                     pypdf.Transformation().translate(tx=self.margin, ty=self.margin)
                 )
-                upper = float(page.mediaBox[2])
-                right = float(page.mediaBox[3])
-                page.mediaBox.setUpperRight((upper + self.margin, right + self.margin))
+                upper = float(page.mediabox[2])
+                right = float(page.mediabox[3])
+                page.mediabox.upper_right = (upper + self.margin, right + self.margin)
 
                 temp_page.merge_page(page)
                 new_pdf.add_page(temp_page)

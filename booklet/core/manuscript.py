@@ -31,13 +31,12 @@ from __future__ import annotations
 # Python standard
 import io
 from datetime import datetime
-import sys, os
+import sys
+import os
+import tempfile
 
-sys.path.insert(1, os.getcwd())
-sys.path.append("..")
 
 # Type hint
-from io import BytesIO, FileIO
 from typing import Union, Tuple, NoReturn, Callable
 from tempfile import _TemporaryFileWrapper as TempFile
 from types import FunctionType
@@ -46,8 +45,14 @@ from numbers import Number
 # PDF
 import pypdf
 
+
+sys.path.insert(1, os.getcwd())
+sys.path.append("..")
+
 # Project modules
-from booklet.utils.misc import *
+#from booklet.utils.misc import *
+from booklet.utils.misc import Path
+from booklet.utils.misc import NamedTempFile
 from booklet.utils import validation
 
 
@@ -74,14 +79,14 @@ class Manuscript:
 
     def __init__(
         self,
-        input: Union[str, Path, BytesIO, FileIO],
-        output: Union[str, Path],
+        input_file: Union[str, Path, io.BytesIO, io.FileIO],
+        output_file: Union[str, Path],
         filename: Union[None, str, Tuple[bool, bool, str]] = None,
         page_range: Union[None, int, str, list] = None,
     ):
 
         self.tem_directory = tempfile.TemporaryDirectory()
-        self.file_path = self.__get_path(input, mode="f")
+        self.file_path = self.__get_path(input_file, mode="f")
         self.file_name = self.file_path.stem
         self.file_format = self.file_path.suffix
         self.pdf = pypdf.PdfReader(self.file_path)
@@ -95,10 +100,10 @@ class Manuscript:
 
         self.page_range = self.__get_page_range(page_range)
 
-        self.output_path = self.__get_path(output, mode="d")
+        self.output_path = self.__get_path(output_file, mode="d")
         self.basic_output_file_name = self.file_name + "_HP_BOOKLET"
 
-        if filename != None and len(filename) == 3:
+        if filename is not None and len(filename) == 3:
             use_as_name = filename[0]
             use_as_suffix = filename[1]
             string = filename[2]
@@ -109,7 +114,7 @@ class Manuscript:
                 self.basic_output_file_name = self.file_name + string
             else:
                 self.basic_output_file_name = string + self.file_name
-        elif type(filename) == str:
+        elif isinstance(filename, str):
             if "." in filename:
                 name, file_format = filename.split(".")
             else:
@@ -119,25 +124,25 @@ class Manuscript:
         self.modifier_index = 0
 
     # Internal routines
-    def __get_path(self, _path: Union[str, Path, BytesIO], mode="f") -> Path:
-        if isinstance(_path, BytesIO):
+    def __get_path(self, _path: Union[str, Path, io.BytesIO], mode="f") -> Path:
+        if isinstance(_path, io.BytesIO):
             return None
-        if type(_path) == str:
+        if isinstance(_path, str):
             _path = Path(_path)
         validation.path(_path, mode)
         return _path
 
     def __get_page_range(self, page_range: Union[None, str, int]) -> list[int]:
-        if page_range == None:
+        if page_range is None:
             return list(range(1, self.file_pages + 1))
-        if type(page_range) == int:
+        if isinstance(page_range, int):
             if page_range > 0 and page_range < self.file_pages:
                 pages = [page_range]
             else:
                 raise ValueError(
                     f"Given pages, {page_range}, exceed file page range, {self.file_pages}."
                 )
-        if type(page_range) == str:
+        if isinstance(page_range, str):
             page_range = page_range.replace(" ", "")
             pages = []
             for st in page_range.split(","):
@@ -166,7 +171,7 @@ class Manuscript:
     def modifier_register(self, modifier:Modifier, to: bool = False) -> NoReturn:
         if not hasattr(modifier, "__type__"):
             raise ValueError("Invalid modifier")
-        if type(to) == bool:
+        if isinstance(to, bool):
             self.modifiers.append(modifier)
         elif validation.check_integer(to, True) and to < len(self.modifiers):
             self.modifiers.insert(to, modifier)
@@ -175,11 +180,11 @@ class Manuscript:
     def pdf_update(
         self,
         pdf: Union[None, pypdf.PdfReader],
-        file: Union[str, Path, TempFile, BytesIO, FileIO, NamedTempFile],
+        file: Union[str, Path, TempFile, io.BytesIO, io.FileIO, NamedTempFile],
         page_range: Union[None, str, list] = None,
     ) -> NoReturn:  # Change the original manuscript
 
-        if type(file) == str:
+        if isinstance(file, str):
             file = Path(file)
         # str -> Path, remain [Path, BytesIO, TempFile, FileIO]
 
@@ -222,45 +227,44 @@ class Manuscript:
             for i in range(0, len(self.modifiers)):
                 j = rule(i)
                 modifier = self.modifiers[j]
-                print(f"{index+1}, {modifier.name} : {modifier.description}")
+                print(f"{i+1}, {modifier.name} : {modifier.description}")
                 modifier.do(i, self, file_mode)
             return "rule"
 
-        if type(do) == str:
+        if isinstance(do, str):
             try:
                 do = int(do)
             except:
                 raise ValueError("Not an integer string.")
-        if type(do) == int:
+        if isinstance(do, int):
             if do < 0 or do >= len(self.modifiers):
                 raise ValueError("Invalid index.")
-            else:
-                modifier = self.modifiers[self.modifier_index]
-                print(f"{index+1}, {modifier.name} : {modifier.description}")
-                modifier.do(1, self, file_mode)
-                self.modifier_index += 1
-                return f"{do}"
-        else:
-            raise TypeError(
-                f"Invalid type, {type(do)}, it must be integer, integer string or 'all'."
-            )
+
+            modifier = self.modifiers[self.modifier_index]
+            print(f"{do+1}, {modifier.name} : {modifier.description}")
+            modifier.do(1, self, file_mode)
+            self.modifier_index += 1
+            return f"{do}"
+        raise TypeError(
+            f"Invalid type, {type(do)}, it must be integer, integer string or 'all'."
+        )
 
     def save_to_file(
         self,
-        file: Union[None, str, Path, TempFile, FileIO, BytesIO] = None,
+        file: Union[None, str, Path, TempFile, io.FileIO, io.BytesIO] = None,
         name: str = None,
         split: Union[None, int] = None,
         check: Callable[[Path, Union[None, list]], bool] = lambda x, args: True,
         **checkargs,
     ) -> NoReturn:
 
-        if name == None:
+        if name is None:
             name = self.basic_output_file_name
-        elif type(name) != str:
+        elif not isinstance(name, str):
             raise ValueError(f"The given name must be str type. Current: {type(name)}")
 
         filepath = ""
-        if file == None:
+        if file is None:
             filename = name
             filepath = self.output_path
         else:
@@ -278,9 +282,9 @@ class Manuscript:
         dt = datetime.now() - datetime.utcnow()
         sec = dt.seconds
         time = str(int(sec / 3600)).zfill(2)
-        min = str(int(sec % 3600)).zfill(2)
+        minutes = str(int(sec % 3600)).zfill(2)
         sign = "+" if dt.days == 0 else "-"
-        utcstring = sign + f"{time}'{min}'"
+        utcstring = sign + f"{time}'{minutes}'"
         current = datetime.now().strftime(r"%Y%m%d%H%M%S")
 
         self.meta["/ModDate"] = f"D:{current}{utcstring}"
@@ -313,9 +317,11 @@ class Manuscript:
 class Modifier:
     """
     This class acts as a filter in pdf manipulation process.
-    Get manuscript file and additional arguments as input and update manuscript with applying filter. 
-    
-    For example, next function :func:`modification` can be converted to `Modifier` class
+    Get manuscript file and additional arguments as input and update
+    manuscript with applying filter. 
+
+    For example, next function :func:`modification` can be converted to
+    `Modifier` class
     
     .. code::
         
@@ -341,18 +347,27 @@ class Modifier:
         self.args = args
         self.kwargs = kwargs
 
-    def get_new_pdf(self, index:int, tem_dir:Union[str, Path], filemode:str="safe") -> Tuple[pypdf.PdfFileWriter, Union[NamedTempFile, io.BytesIO]]:
+    def get_new_pdf(
+        self,
+        index:int,
+        tem_dir:Union[str, Path],
+        filemode:str="safe"
+    ) -> Tuple[pypdf.PdfWriter, Union[NamedTempFile, io.BytesIO]]:
         """
-        Return new :class:`PdfFileWriter` object in pypdf and new file, file-like object.
+        Return new :class:`PdfWriter` object in pypdf and new file,
+            file-like object.
 
-        :param index: index, indicating the order of modifer in execution in :class:`Manuscript object.` 
+        :param index: index, indicating the order of modifer in execution
+            in :class:`Manuscript object.` 
         :type index: int
         :param manuscript: :class:`Manuscript` object calls the modifier
         :type manuscript: Manuscript
-        :param filemode: New file mode. If it is "safe" :class`NamedTempFile` object is returend else :class:`io.BytesIO` is returned, defaults to "safe"
+        :param filemode: New file mode. If it is "safe"
+            :class`NamedTempFile` object is returend else
+            :class:`io.BytesIO` is returned, defaults to "safe"
         :type filemode: str, optional
-        :return: :class:`PdfFileWriter` object and new file, file-like object.
-        :rtype: Tuple[pypdf.PdfFileWriter, Union[NamedTempFile, io.BytesIO]]
+        :return: :class:`PdfWriter` object and new file, file-like object.
+        :rtype: Tuple[pypdf.PdfWriter, Union[NamedTempFile, io.BytesIO]]
         """
         if filemode == "safe":
             new_file = NamedTempFile.from_temp_setting(
@@ -367,12 +382,15 @@ class Modifier:
         new_pdf = pypdf.PdfWriter()
         return new_pdf, new_file
 
-    def do(self, index:int, manuscript:Manuscript, *args, **kwargs) -> NoReturn:
+    def do(self, index:int, manuscript:Manuscript) -> NoReturn:
         """
-        Body of each modifier object. Using internal variables and methods generate new manuscript file
-        and update end of the function :code:`cls.pdf_update()` method is called 
+        Body of each modifier object. Using internal variables and
+        methods generate new manuscript file
+        and update end of the function :code:`cls.pdf_update()` method
+        is called 
 
-        :param index: index, indicating the order of modifer in execution in :class:`Manuscript object.` 
+        :param index: index, indicating the order of modifer in execution
+            in :class:`Manuscript object.` 
         :type index: int
         :param manuscript: :class:`Manuscript`
         :type manuscript: :class:`Manuscript`
@@ -381,14 +399,15 @@ class Modifier:
         """
         file_mode = kwargs["filemode"]
         new_pdf, new_file = self.get_new_pdf(index, manuscript.tem_directory.name, file_mode)
-        #Body - 
+        #Body -
 
         #-----
         manuscript.pdf_update(new_pdf, new_file)
+
 class Converter(Modifier):
     """
-    This class 
-    All its methods are depending on PDF libraries, since it does not provides any additional internal methods.
+    All the methods of this class depend on PDF libraries, since it does
+    not provides any additional internal methods.
     It is just a wrapper of :class:`Modifier`: class for categorizing features.
     """
     __type__ = "converter"
@@ -398,6 +417,7 @@ class Converter(Modifier):
     @property
     def type(self):
         return Converter.__type__
+
 class Template(Modifier):
     """
     This class 
@@ -416,12 +436,16 @@ class Template(Modifier):
     def __init__(
         self,
         file: Union[None, str, io.BytesIO, io.FileIO, TempFile] = None,
-        direction: bool = True,  # True: manuscript to template e.g: Imposition, False: Template to Manuscript
+        direction: bool = True,
         rule: Union[None, Callable] = None,
         position: Union[None, Callable] = None,
     ):
-        if file != None:
-            self.file = file if type(file) != str else self.__get_path(file, mode="f")
+        """
+          : direction  True: manuscript to template e.g:
+              Imposition, False: Template to Manuscript
+        """
+        if file is not None:
+            self.file = file if isinstance(file, str) else self.__get_path(file, mode="f")
             self.pdf = pypdf.PdfReader(file)
             page = self.pdf.pages[0]
             self.paper_format = (
@@ -434,13 +458,13 @@ class Template(Modifier):
         self.custom_position = position
 
     # Internal routines
-    def __validate_page_num(self, cls, page_num, range=None):
+    def __validate_page_num(self, cls, page_num, page_range=None):
         if not validation.check_integer(page_num):
             # print(page_num)
             # print(type(page_num))
             raise ValueError("Invalid value it must be integer")
         if self.direction:  # manuscript to template
-            ran = len(self.pdf.pages) if range == None else range
+            ran = len(self.pdf.pages) if page_range is None else page_range
             if page_num > ran:
                 raise ValueError(
                     f"Exceed total page range. {page_num}>{len(self.pdf.pages)}"
@@ -451,29 +475,31 @@ class Template(Modifier):
             )
 
     # Define below two method in child class
-    # def rule(self, x):
-    #     pass
-    # def position(self, x):
-    #     pass
+    def rule(self, x):
+        "Dummy function - defined in child class"
+
+    def position(self, x):
+        "Dummy function - defined in child class"
+
     # Basic routines
     def index_mapping(
-        self, cls, pagenum: int, range=None
-    ) -> list:  # number of page in manuscript
-        self.__validate_page_num(cls, pagenum, range)
+        self, cls, pagenum: int, page_range=None
+    ) -> list:
+        "# number of page in manuscript"
+        self.__validate_page_num(cls, pagenum, page_range)
         return (
             self.rule(pagenum)
-            if self.custom_rule == None
+            if self.custom_rule is None
             else self.custom_rule(pagenum)
         )
 
-    def position_mapping(self, cls, pagenum: int, range=None) -> Tuple[float, float]:
-        self.__validate_page_num(cls, pagenum, range)
+    def position_mapping(self, cls, pagenum: int, page_range=None) -> Tuple[float, float]:
+        self.__validate_page_num(cls, pagenum, page_range)
         return (
             self.position(pagenum)
-            if self.custom_position == None
+            if self.custom_position is None
             else self.custom_position(pagenum)
         )
-
 
 if __name__ == "__main__":
     pass

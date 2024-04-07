@@ -71,13 +71,13 @@ def open_url(url: str) -> NoReturn:
 class NamedTempFile:
     """NamedTemporary file IO warpper for reading and writing"""
 
-    def __init__(self, tempfile, mode=None, delete: bool = False):
-        if tempfile.delete:
+    def __init__(self, tempfile_inst, mode=None, delete: bool = False):
+        if tempfile_inst.delete:
             raise ValueError("Named Temporary File must be in non-delete mode.")
-        self.path = Path(tempfile.name)
-        self.mode = tempfile.mode if mode == None else mode
-        self.delete = delete if type(delete) == bool else False
-        tempfile.close()
+        self.path = Path(tempfile_inst.name)
+        self.mode = tempfile_inst.mode if mode is None else mode
+        self.delete = delete if isinstance(delete, bool) else False
+        tempfile_inst.close()
         # os.unlink(self.path)
         self.stream = open(self.path, self.mode)
 
@@ -86,7 +86,7 @@ class NamedTempFile:
         if self.delete:
             try:
                 os.unlink(self.path)
-            except:
+            except FileNotFoundError:
                 pass
 
     def __exit__(self, *args):
@@ -94,7 +94,7 @@ class NamedTempFile:
         if self.delete:
             try:
                 os.unlink(self.path)
-            except:
+            except FileNotFoundError:
                 pass
 
     @classmethod
