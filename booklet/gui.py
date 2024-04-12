@@ -54,6 +54,7 @@ from booklet.core.manuscript import Manuscript
 
 # from booklet.core.modifiers import *
 from booklet.core.converters.toimage import ToImage
+from booklet.core.converters.section import SecComposition, Section
 
 from booklet.core.templates.imposition import Imposition
 from booklet.core.templates.printingmark import PrintingMark
@@ -61,7 +62,6 @@ from booklet import data
 from booklet.utils.misc import resources_path, open_url
 from booklet.utils.conversion import mm2pts, pts2mm
 from booklet.utils.color import hex2cmyk, cmyk2rgb, rgb2hex
-from booklet.deprecated.converters import SigComposition, Signature
 
 if platform.system() != "Darwin":
     from tkinter import ttk
@@ -1885,11 +1885,11 @@ class Booklet:
             filename=filename,
             page_range=pagerange,
         )
-        _sig_composition = SigComposition(nl, nn)
+        _sec_composition = SecComposition(nl, nn)
         toimage = ToImage(toimage=False, dpi=600)
 
-        signature = Signature(
-            sig_composition=_sig_composition,
+        section = Section(
+            sec_composition=_sec_composition,
             blank_mode=blankmode,
             riffle=rifflebool,
             fold=foldbool,
@@ -1904,7 +1904,7 @@ class Booklet:
             proof=sigproofbool,
             proof_color=sig_color,
             proof_width=default_gap,
-            imposition_layout=_sig_composition,
+            imposition_layout=_sec_composition,
         )
         printing_mark = PrintingMark(
             on=bool(trimbool or registrationbool or cmykbool),
@@ -1913,7 +1913,7 @@ class Booklet:
             reg=registrationbool,
             cmyk=cmykbool,
         )
-        modifiers = [toimage, signature, imposition, printing_mark]
+        modifiers = [toimage, section, imposition, printing_mark]
         # (
         #    sub_popup,
         #    sub_progress,
@@ -1928,8 +1928,8 @@ class Booklet:
         manuscript.update(file_mode=mode)
 
         if splitbool:
-            print(f"_sig_composition: {_sig_composition.composition}")
-            manuscript.save_to_file(split=_sig_composition.composition[0]*2)
+            print(f"_sec_composition: {_sec_composition.composition}")
+            manuscript.save_to_file(split=_sec_composition.composition[0]*2)
         else:
             manuscript.save_to_file()
         

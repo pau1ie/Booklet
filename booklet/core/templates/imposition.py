@@ -82,8 +82,14 @@ class Imposition(Template):
             if isinstance(imposition_layout, SecComposition)
             else imposition_layout
         )
+        self.leaves_inserted = (
+            imposition_layout.composition[0]
+            if isinstance(imposition_layout, SecComposition)
+            else 1
+        )
+
         self.pages_per_template = (
-            self.layout.layout[0] * self.layout.layout[1] if self.layout is not None else 1
+            self.layout[0] * self.layout[1] if self.layout is not None else 1
         )
         self.manuscript_format = None
 
@@ -96,8 +102,8 @@ class Imposition(Template):
 
     def position(self, i: int) -> tuple[float, float]:  # manuscript page
         index = i % self.pages_per_template
-        column = self.layout.layout[1]
-        row = self.layout.layout[0]
+        column = self.layout[1]
+        row = self.layout[0]
 
         x = (index) % column
         y = row - floor((index) / column) - 1
@@ -121,10 +127,12 @@ class Imposition(Template):
             return color
 
     def generate_template(self, paper_width, paper_height, template_pages):
+        "Adds signature proof to template pages."
         tem_pdf_byte = io.BytesIO()
         template_proof = Canvas(tem_pdf_byte, pagesize=(paper_width, paper_height))
 
-        proof_height = 2 * self.manuscript_format[1] / template_pages
+        proof_height = (2 * self.leaves_inserted
+                        * self.manuscript_format[1]) / template_pages
         proof_width = self.proof_width
         # position
         x_center = self.manuscript_format[0] + self.gap / 2
@@ -139,7 +147,8 @@ class Imposition(Template):
 
         for i in range(0, template_pages):
             heights.append(proof_position[1])
-            if i % 2 == 0:
+            # Check if we are on a new signature page
+            if i % (2*self.leaves_inserted) == 0:
                 template_proof.setLineWidth(0)
                 template_proof.setFillColorCMYK(c, m, y, k)
                 template_proof.rect(
@@ -156,14 +165,11 @@ class Imposition(Template):
         tem_pdf_byte.seek(0)
         proof_templates = pypdf.PdfReader(tem_pdf_byte)
 
-# Add the signature proof. Currently it adds too many - doesn't take
-# inserted pages into account.
         for i in range(0, template_pages):
             proof_page = proof_templates.pages[i]
             proof_page.mediabox.lower_left = (proof_position[0], heights[i])
             proof_page.mediabox.upper_right = (proof_position[0]
                                 + proof_width, heights[i] + proof_height)
-
 
         return proof_templates, tem_pdf_byte
 
@@ -175,10 +181,10 @@ class Imposition(Template):
         new_pdf, new_file = self.get_new_pdf(index, manuscript.tem_directory.name, file_mode)
 
         self.manuscript_format = manuscript.file_paper_format
-        paper_width = (self.manuscript_format[0] + self.gap) * self.layout.layout[1] - (
+        paper_width = (self.manuscript_format[0] + self.gap) * self.layout[1] - (
             self.gap
         )
-        paper_height = (self.manuscript_format[1] + self.gap) * self.layout.layout[0] - (
+        paper_height = (self.manuscript_format[1] + self.gap) * self.layout[0] - (
             self.gap
         )
         paper_format = (paper_width, paper_height)
@@ -220,5 +226,5 @@ class Imposition(Template):
                 page.merge_page(proof_templates.pages[i])
 
         new_pdf.write(new_file)
-        manuscript.meta["/Imposition"] = f"{self.layout.layout[0]}x{self.layout.layout[1]}"
+        manuscript.meta["/Imposition"] = f"{self.layout[0]}x{self.layout[1]}"
         manuscript.pdf_update(new_pdf, new_file)

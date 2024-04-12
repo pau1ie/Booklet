@@ -421,7 +421,9 @@ class Section(Converter):
             return (format_t[0], format_t[1])
 
     def do(self, do_index: int, manuscript: Manuscript, file_mode: int, format=None):
-        blank_num = len(manuscript.pages) % self.sec_composition.leaves
+        blank_num = self.sec_composition.leaves - (
+                    len(manuscript.pages) % self.sec_composition.leaves
+            )
         page_range: list(int) = manuscript.page_range
         if self.blank_mode == "front":
             page_range = ([0] * blank_num) + page_range
@@ -432,9 +434,9 @@ class Section(Converter):
             blank_num_back = blank_num - blank_num_front
             page_range = ([0] * blank_num_front) + page_range + ([0] * blank_num_back)
 
-        if format != None:
+        if format is not None:
             paper_format = self.__get_paper_format(format)
-        elif self.paper_format != None:
+        elif self.paper_format is not None:
             paper_format = self.paper_format
         else:
             paper_format = manuscript.file_paper_format
@@ -477,8 +479,8 @@ class Section(Converter):
                     page = manuscript.pages[page_num]
 
                     page.scale_to(paper_format[0], paper_format[1])
-                    page.mediabox.setLowerLeft([0, 0])
-                    page.mediabox.setUpperRight(paper_format)
+                    page.mediabox.lower_left = [0, 0]
+                    page.mediabox.upper_right = paper_format
 
                     left = manuscript.pdf_origin[0]
                     bottom = manuscript.pdf_origin[1]
@@ -488,9 +490,8 @@ class Section(Converter):
 
                     new_pdf.add_page(page)
 
-        with open(new_file.name, "wb") as f:
-            new_pdf.write(f)
+        new_pdf.write(new_file)
         manuscript.meta["/signature"] = str(self.sec_composition.leaves)
 
-        manuscript.pdf_update(new_pdf, new_file.name)
+        manuscript.pdf_update(new_pdf, new_file)
         return True

@@ -47,8 +47,7 @@ from booklet.core.converters.toimage import ToImage
 
 from booklet.core.templates.imposition import Imposition
 from booklet.core.templates.printingmark import PrintingMark
-
-from booklet.deprecated.converters import SigComposition, Signature
+from booklet.core.converters.section import SecComposition, Section
 
 from booklet.utils.misc import get_page_range
 
@@ -182,7 +181,7 @@ if __name__ == "__main__":
         if not check_composition(nn, ns):
             raise ValueError(f"sig composition {nl} {nn} are not vaild.")
         # nl = nn * ns
-        _sig_composition = SigComposition(nl, nn)
+        _sec_composition = SecComposition(nl, nn)
 
         # blank
         blankmode = args.blank_mode
@@ -239,8 +238,8 @@ if __name__ == "__main__":
 
         toimage = ToImage(toimage=toimagebool, dpi=600)
 
-        signature = Signature(
-            sig_composition=_sig_composition,
+        section = Section(
+            sec_composition=_sec_composition,
             blank_mode=blankmode,
             riffle=rifflebool,
             fold=args.fold,
@@ -253,7 +252,7 @@ if __name__ == "__main__":
             proof=sigproof[0],
             proof_color=sigproof[1],
             proof_width=default_gap * 2,
-            imposition_layout=_sig_composition,
+            imposition_layout=_sec_composition,
         )
         printing_mark = PrintingMark(
             on=bool(args.crop or args.registration or args.cmyk),
@@ -262,13 +261,12 @@ if __name__ == "__main__":
             reg=args.registration,
             cmyk=args.cmyk,
         )
-        modifiers = [toimage, signature, imposition, printing_mark]
+        modifiers = [toimage, section, imposition, printing_mark]
         for modifier in modifiers:
             manuscript.modifier_register(modifier)
         manuscript.update(do="all", file_mode="unsafe")
         if args.split:
-            print(f"_sig_composition: {_sig_composition.composition}")
-            manuscript.save_to_file(split=_sig_composition.composition[0]*2)
+            manuscript.save_to_file(split=_sec_composition.composition[0]*2)
         else:
             manuscript.save_to_file()
 
