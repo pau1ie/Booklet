@@ -461,7 +461,7 @@ class Section(Converter):
             )
             permuted_blocks.append(permuted_block)
 
-        new_pdf, new_file = self.get_new_pdf(do_index, manuscript, filemode=file_mode)
+        new_pdf, new_file = self.get_new_pdf(do_index, manuscript.tem_directory.name, filemode=file_mode)
         for pages in permuted_blocks:
             for index, i in enumerate(pages):
                 if i == 0:
