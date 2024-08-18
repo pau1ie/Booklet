@@ -25,6 +25,9 @@
 # CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+"""
+Validation functions
+"""
 
 from __future__ import annotations
 
@@ -46,7 +49,7 @@ def path(_path: Union[str, Path], mode: str = "f") -> NoReturn:
     :return: _description_
     :rtype: NoReturn
     """
-    if type(_path) == str:
+    if isinstance(_path, str):
         _path = Path(_path)
     # type check--------------------------
     if not isinstance(_path, Path):
@@ -73,7 +76,7 @@ def check_integer(i: int, positive: bool = False) -> bool:
     try:
         integer(i, positive)
         return True
-    except:
+    except (ValueError, TypeError):
         return False
 
 
@@ -89,18 +92,19 @@ def integer(i: Union[str, Number], positive: bool = False) -> NoReturn:
     :return: None
     :rtype: NoReturn
     """
-    if type(i) == str:
+    if isinstance(i, str):
         try:
             i = int(i)
-        except:
-            raise TypeError(f"Not an integer object or integer string. {type(i)}_{i}")
-    if type(i) == int:
+        except ValueError as e:
+            raise TypeError(f"Not an integer object or integer string. {type(i)}_{i}") from e
+    if isinstance(i, int):
         if i < 0 and positive:
             raise ValueError(f"Not a positive value. {i}")
 
 
 def check_number(i: Union[str, Number], positive=False) -> bool:
-    """Validate the type of the given value and its sign whether positive or negative. Return boolean value.
+    """Validate the type of the given value and its sign whether positive or negative. 
+    Return boolean value.
 
     :param i: Unknown value
     :type i: Union[str, Number]
@@ -112,7 +116,7 @@ def check_number(i: Union[str, Number], positive=False) -> bool:
     try:
         number(i, positive)
         return True
-    except:
+    except (ValueError, TypeError):
         return False
 
 
@@ -130,21 +134,21 @@ def number(i: Union[str, Number], positive=False) -> NoReturn:
     :return: None
     :rtype: NoReturn
     """
-    if type(i) == str:
+    if isinstance(i, str):
         if "." in i:
             try:
                 i = float(i)
-            except:
-                raise ValueError("Invaild string, not even a float number")
+            except ValueError as e:
+                raise ValueError("Invaild string, not even a float number") from e
         else:
             try:
                 i = int(i)
-            except:
-                raise ValueError("Invaild string, not an integer")
+            except ValueError as e:
+                raise ValueError("Invaild string, not an integer") from e
     if not isinstance(i, Number):
         raise TypeError(f"Invaild type: {type(i)}_{i}")
 
-    if i < 0 and positive == False:
+    if i < 0 and positive is False:
         raise ValueError(f"Not a positive value. {i}")
 
 

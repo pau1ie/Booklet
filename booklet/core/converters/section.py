@@ -26,6 +26,11 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+"""
+section.py
+
+Contains SecComposition and Section classes.
+"""
 
 from typing import Union, Tuple
 from numbers import Number
@@ -41,6 +46,9 @@ from booklet.utils import validation as Validation
 
 
 class SecComposition:  # Fix all the permutation routines. Currnet is not vaild option
+    """
+    Section Composition, how to arrange pages in the section.
+    """
     __page_map = {
         4: [[4, 1], [2, 3]],
         8: [[8, 1, 5, 4], [2, 7, 3, 6]],
@@ -132,14 +140,14 @@ class SecComposition:  # Fix all the permutation routines. Currnet is not vaild 
         insert: int = 1,
         custom: Union[
             Tuple[bool], Tuple[bool, Union[list[list, list], list], Tuple[int, int]]
-        ] = [False],
+        ] = False,
     ):
         self.__leaves_check(sig_leaves, insert)
         self._leaves_total: int = sig_leaves
         self._leaves_inserted: int = insert
         self._leaves_gathered: int = int(self._leaves_total / self._leaves_inserted)
 
-        if custom[0]:
+        if custom:
             custom_map = custom[1]
             custom_layout: Tuple = custom[2]
             self._page_mapping: Permutation = self.__map_check(custom_map)
@@ -152,6 +160,9 @@ class SecComposition:  # Fix all the permutation routines. Currnet is not vaild 
 
     @property
     def leaves(self):
+        """
+        Return the number of leaves in the signature (page sides /2)
+        """
         return self._leaves_total
 
     @leaves.setter
@@ -161,6 +172,9 @@ class SecComposition:  # Fix all the permutation routines. Currnet is not vaild 
 
     @property
     def composition(self):
+        """
+        How is this signature composed - Number of leaves inserted, no of leaves folded
+        """
         return (self._leaves_inserted, self._leaves_gathered)
 
     @property
@@ -168,32 +182,31 @@ class SecComposition:  # Fix all the permutation routines. Currnet is not vaild 
         return self._page_mapping
 
     @map.setter
-    def map(self, map):
-        self._page_mapping = self.__map_check(map)
+    def map(self, page_map):
+        self._page_mapping = self.__map_check(page_map)
 
-    def __map_check(self, map):
-        if isinstance(map, list):
-            if isinstance(map[0], list):
-                if len(map[0]) != len(map[1]):
+    def __map_check(self, page_map):
+        if isinstance(page_map, list):
+            if isinstance(page_map[0], list):
+                if len(page_map[0]) != len(page_map[1]):
                     raise ValueError(
                         "[a:List,b:List], lengths of the a and the b are not same."
                     )
-                map = Permutation.from_lists(map)
+                page_map = Permutation.from_lists(page_map)
             else:
-                length = len(map)
+                length = len(page_map)
                 if length % 2 != 0:
                     raise ValueError("The length must be even.")
-                map = Permutation(length, map)
+                page_map = Permutation(length, page_map)
 
-        if not isinstance(map, Permutation):
+        if not isinstance(page_map, Permutation):
             raise TypeError("Given mapping data must be a Permutation or list type.")
-        else:
-            length = map.n
+        length = page_map.n
 
         if length != self._leaves_total:
             raise ValueError("Length of list is not same with the total leaves.")
 
-        return map
+        return page_map
 
     @property
     def imposition(self):
@@ -397,7 +410,7 @@ class Section(Converter):
             return SecComposition(sig_leaves, insert)
 
     def __get_paper_format(self, format: Tuple[float, float]) -> Tuple[Number, Number]:
-        if format == None:
+        if format is None:
             return None
         if type(format) != tuple and type(format) != list:
             raise TypeError(f"Must be list or tuple{format}, {type(format)}")

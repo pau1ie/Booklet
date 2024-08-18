@@ -38,11 +38,12 @@ from booklet.meta import __version__ as release_str
 # -- Project information -----------------------------------------------------
 
 project = 'HornPenguin Booklet'
-copyright = '2022, Hyun Seong Kim'
-author = 'Hyun Seong Kim'
+copyright = '2022, Hyun Seong Kim, 2024 Paul Houghton'
+author = 'Hyun Seong Kim, Paul Houghton'
 
 # The full version, including alpha/beta/rc tags
 release = release_str
+version = release_str
 
 
 
@@ -73,7 +74,7 @@ exclude_patterns = []
 #html_theme = 'sphinx_rtd_theme'
 
 html_permalinks_icon = '<span>#</span>'
-html_theme = 'sphinxawesome_theme'
+html_theme = 'default'
 html_favicon = 'HornPavicon.ico'
 
 html_theme_options = {

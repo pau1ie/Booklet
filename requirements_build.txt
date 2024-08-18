@@ -1,3 +1,4 @@
 fontTools
 Sphinx
 sphinxawesome-theme
+pyinstaller

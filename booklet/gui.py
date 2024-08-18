@@ -1914,14 +1914,7 @@ class Booklet:
             cmyk=cmykbool,
         )
         modifiers = [toimage, section, imposition, printing_mark]
-        # (
-        #    sub_popup,
-        #    sub_progress,
-        #    progress_text,
-        #    progress_length,
-        #    destroybutton,
-        # ) = self.pdf_progress_popup(pagerange, modifiers)
-        # self.window.wait_window(sub_popup)
+
         for modifier in modifiers:
             manuscript.modifier_register(modifier)
         mode = "safe"
@@ -1932,32 +1925,8 @@ class Booklet:
             manuscript.save_to_file(split=_sec_composition.composition[0]*2)
         else:
             manuscript.save_to_file()
-        
+
         del manuscript
-
-        # old code
-        # generate_signature(
-        #     inputfile=input_file,
-        #     output=output_path,
-        #     pagerange=pagerange,
-        #     blank=[blankmode, blanknumber],
-        #     sig_com=[nl, nn, ns],
-        #     riffle=rifflebool,
-        #     fold=foldbool,
-        #     format=[format_width, format_height],
-        #     imposition=impositionbool,
-        #     split=splitbool,
-        #     trim=trimbool,
-        #     registration=registrationbool,
-        #     cmyk=cmykbool,
-        #     sigproof=[sigproofbool, sig_color],
-        #     progress=[progress_length, sub_progress, progress_text, sub_popup],
-        # )
-
-        # sub_progress["value"] = progress_length
-        # progress_text.set(f"Done")
-        # sub_popup.update()
-        # destroybutton.config(state=tk.ACTIVE)
 
         print("Done")
 

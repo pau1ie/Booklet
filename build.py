@@ -1,8 +1,10 @@
 # Build script using Pyinstaller and Sphinx
 
-import PyInstaller.__main__
-import sys, os
+import sys
+import os
 import platform
+import shutil
+import PyInstaller.__main__
 
 from booklet.utils.images import icon_name
 
@@ -31,7 +33,6 @@ for arg in argv:
         pyinstall_argv.append(arg)
     if "--console" in arg:
         CONSOLE = True
-        
 
 FILE_NAME = os.path.join("booklet", name)
 
@@ -79,9 +80,9 @@ if not CONSOLE:
 build_option += Platform_spec[PLATFORM]
 
 path_sep = ";" if PLATFORM == "Windows" else ":"
-datas = {"resources": "resources"}
+add_data = {"resources": "resources"}
 binaries = []
-data_list = [f"--add-data={key}{path_sep}{datas[key]}" for key in datas.keys()]
+data_list = [f"--add-data={key}{path_sep}{value}" for key, value in add_data.items()]
 binary_list = []
 
 build_option += data_list
@@ -98,7 +99,6 @@ if __name__ == "__main__":
         os.system(f"sphinx-apidoc -o {document_directory} {project_name}")
         os.system("make " + " ".join(sphinx_argv))
 
-import os, shutil
 for filename in os.listdir(WORK_PATH):
     file_path = os.path.join(WORK_PATH, filename)
     try:
@@ -107,6 +107,6 @@ for filename in os.listdir(WORK_PATH):
         elif os.path.isdir(file_path):
             shutil.rmtree(file_path)
     except Exception as e:
-        print('Failed to delete %s. Reason: %s' % (file_path, e))
+        print(f'Failed to delete {file_path}. Reason: {e}')
 
 print("Finished")

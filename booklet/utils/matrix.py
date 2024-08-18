@@ -28,16 +28,25 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-# 1, 2 dimension matrix operation based on default list type
+"""
+ 1 and 2-dimension matrix operation based on default list type
+"""
 
 import collections
 
 # Utils
 
 def split_list(list1d: list, n: int, mode="l") -> list:
+    """
+    Split a one dimensional list passed into a list of lists.
+    The number of items in the list must be divisible by the parameter n.
+    The mode is one of:
+    * l - Split the list into lists of length n
+    * n - Split the list into n lists
+    """
     if not isinstance(list1d, collections.abc.Iterable):
         raise TypeError("The given object is not an iterable object.")
-    if mode != "l" and mode != "n":
+    if mode not in ("l", "n"):
         raise ValueError("The 'mode' parameter must be 'l' or 'n', current = {mode}")
     num = n
     length_list = len(list1d)
@@ -63,9 +72,13 @@ def split_list(list1d: list, n: int, mode="l") -> list:
     return rlist
 
 def transpose(list2d: list) -> list:
+    """
+    transpose: Transpose a list of lists, effectively swap rows and columns
+    Takes one argument, the lis of lists to transpose.
+    """
     row_length = len(list2d)
     column_length = len(list2d[0])
-    t = list()
+    t = []
     for i in range(0, column_length):
         t.append([])
     for i in range(0, column_length):
@@ -74,21 +87,33 @@ def transpose(list2d: list) -> list:
     return t
 
 def flip(matrix: list) -> list:
+    """
+    Reverse the order of the elements in the outer list.
+    """
     size = len(matrix)
-    f = list()
+    f = []
     for i in range(0, size):
         f.append(matrix[size - i - 1])
     return f
 
 def concatenate(matrix: list[list]) -> list:
+    """
+    Flatten the list of lists - change the 2d list passed into a
+    1-dimensional list.
+    """
     length = len(matrix)
-    rlist = list()
+    rlist = []
     for i in range(0, length):
         for element in matrix[i]:
             rlist.append(element)
     return rlist
 
 def reshape(list1d: list, shape) -> list[list]:
+    """
+    Change a one dimensional list into a list of lists with shape[0]
+    entries in each of shape[1] lists. this is done by calling the
+    split_list method.
+    """
     size1d = len(list1d)
     if size1d != shape[0] * shape[1]:
         raise ValueError("The list length and shape are not matched each other.")

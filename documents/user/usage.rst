@@ -11,20 +11,22 @@ UI
 .. image:: ../_static/basic_ui.png
 
 
-Select PDF file to modulate
+Select PDF file to manipulate
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. image:: ../_static/select_file001.png
 
-Click the grey button with :code:`...` notation on the right of the input box to choose a manuscript.
-Otherwise, you can type the file path directly to the input box including the file name, but it is not recommended. 
-
+Click the grey button with :code:`...` notation on the right of the
+input box to choose a PDF to work on. This will be called the
+manuscript.
+Otherwise, the file path can be typed directly into the input box,
+but this may be more error prone.
 
 .. image:: ../_static/select_file002.png
 
 In this example, we chose :code:`test.pdf` file. 
 HornPenguin Booklet automatically detects meta data, title, authors, and pages, of the given pdf files.
-In CUI mode, just type the path of the selected pdf file.
+
 
 Basic Settings
 ^^^^^^^^^^^^^^^^
@@ -34,14 +36,16 @@ Output path and File name
 
 .. image:: ../_static/output_setting001.png
 
-*Output path* is a directory path where the output file will be saved, 
+*Output path* is a directory path where the output file will be saved,
 The default value is the path of the original file.
-You can modify it by clicking the grey button, :code:`...`, or directly modify the path string in the input box.
+You can modify it by clicking the grey button, :code:`...`, or by
+changing the path string in the input box.
 
-
-*File name* is the name of the output file. The default value is :code:`{original file name}_HP_BOOKLET.pdf`. 
-You can modify it, but be aware that it does not check the existence of the given file. 
-If there is a same file in the output path, it will be overwritten by the new file. 
+*File name* is the name of the output file. The default value is
+:code:`{original file name}_HP_BOOKLET.pdf`. 
+You can modify it, but be aware that HornPenguin Booklet does not check
+whether the file already exists. If it does, it will be overwritten by
+the new file. 
 
 
 Pages
@@ -49,11 +53,19 @@ Pages
 
 .. image:: ../_static/output_setting002.png
 
-*Pages* is a number of pages per each signatures. 
-When you choose specific number of sheets, additional blank pages will be shown right to selection box.
-In this case, manuscript file has 32 pages, so it will be 0 for 4, 8, 16, 32 number of sheets.
-In the list of sheet numbers, you can see some numbers have a subfix :code:`f`.
-:code:`f` indicates fold support numbers. if you select one of those numbers, the fold check will be activated.
+*Pages* is the number of pages in each signature.
+Since the total number of pages has to be divisble
+by the number of pages in a signature, additional blank pages will be
+added automatically. The number of additional blank pages is shown to
+the right of the selection box.
+In this case, the original manuscript file has 32 pages, so no
+additional pages will be requred for a signature size of 0 for 4, 8, 16,
+or 32 pages.
+You will notice in the pages drop down, some numbers have an :code:`f`
+suffix.
+:code:`f` indicates fold support numbers. if you select one of those
+numbers, the fold check box will be enabled. See below for further
+details on this option.
 
 
 Book format
@@ -80,17 +92,23 @@ Fold
 
 .. image:: ../_static/output_setting004.png
 
-*Fold* option is restricted to some special sheet numbers in *Leaves* and they are notated :code:`{number}f`.
-The default transformation does not rotate pages for the fold. 
-Check this option, if you want to get a direct result file to fold.
-It is automatically checked when you check *imposition* option in the advanced tab. 
+As noted above, the *Fold* option is only enabled when selecting
+particular numbers of pages per section in the *Pages* drop down,
+those with the :code:`{number}f` suffix.
+By default pages are not rotated to allow them to be folded.
+If this option is selected, the output file is generated with
+the individual pages in order and rotation such that they end
+up in the correct order once the page is folded.
+Selecting the *imposition* option in the advanced tab has the same
+effect.
+
 
 Riffling direction
 """"""""""""""""""""""""""""""""""""""""
 
 *Riffling direction* is a riffling direction of the output file. 
-The default: `right`. `left` is for old Asian, Arabic, and Hebrew manuscripts.
-
+The default is: `right`, which is correct in most cases.
+`left` is for old Asian, Arabic, and Hebrew manuscripts.
 
  
 Advanced options
@@ -99,8 +117,7 @@ Advanced options
 .. image:: ../_static/advanced_ui.png
 
 Click the above `advanced` tab to see advanced settings.
-Basic settings are using prefixed advanced settings. 
-You can modify more detailed options.
+These are defaulted if they are not changed.
 
 Sheet works
 ^^^^^^^^^^^^^
@@ -110,25 +127,29 @@ Blank page(s)
 
 .. image:: ../_static/Blank.png
 
-*Blank page(s)* option sets the mode of blank page addition. 
-This mode indicates the location where the additional blank pages are added. 
-Supported options are :code:`back`, :code:`front`, :code:`both`. 
-When you choose :code:`both` option, the additional pages will be distributed equally front and back.
-If the additional pages are odd, then the back pages will be prior to the front.
-The default is `back`.
+The *Blank page(s)* option controls where the additional blank pages,
+mentioned in `Pages` above, are added. Options are :code:`back`,
+:code:`front` and :code:`both`. If :code:`both` is chosen, half the
+additional blank pages will be added to the front and half to the back.
+If there is an odd page, it is added to the back (so the back has one
+additional blank page). The default is `back`.
+
 
 Page range
 """"""""""""""""""""""""
 
 .. image:: ../_static/Page_range001.png
 
-*Page range* is a range of pages to use in transformation. 
-You can use selected pages of orginal file to generate signature. 
-You can combine independent single pages and several page ranges with comma, :code:`,`. 
-Example: :code:`1-20, 23, 25, 40-100`. 
-The total pages in page range will be calulated and shown next to input box. 
-Beaware that if the given range string is not vaild (pages must be in right order and must not exceed max page range) , it will deactivate `Generate` button below. 
-The default is :code:`1-{total pages of original file}`.
+*Page range* gives control over which pages from the source PDF are used
+to generate the signatures. Single pages can be combined with page ranges
+using commas, :code:`,`. 
+For Example: :code:`1-20, 23, 25, 40-100`. 
+The total pages in page range will be calulated and shown next to input
+box. Beware that if the given range string is not valid (pages must be in
+the right order and must not exceed max page range), the `Generate` 
+button will be deactivated. 
+The default is :code:`1-{total pages of original file}`, i.e. all pages
+in the source file.
 
 Let's see an example, the above image shows the default range of :code:`test.pdf`, because its total range is from 1 to 32.
 You can set specific range like below.
@@ -150,8 +171,9 @@ Custom format
 .. image:: ../_static/custom_format.png
 
 You can set a custom paper format that is not listed in `Paper format` table. 
-The front is the width and the back is the height of the format.
-The default value is the original paper size or predefined paper format in basic options.
+The first number is the width and the second is the height of the paper.
+The default value is the original paper size or the paper format selected
+in the basic options (above).
 See paper format reference in :code:`Help -> Paper Format` popup. 
 
 
@@ -221,10 +243,11 @@ Utils
 This tab supports miscellaneous utils; note mode, conversion to image, and custom imposition.
 Note mode is in developing state, it will not work in 0.0.2 version.
 
-.. 
 
-  Note mode
-  """"""""""""""""""""""""""
+Note mode
+""""""""""""""""""""""""""
+
+.. 
 
   This routine is presented for note maker. 
   However, :code:`basic, advanced` routines don't repeat the given pdf pages so you need to expand them using addtional program.

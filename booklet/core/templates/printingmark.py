@@ -28,7 +28,7 @@
 """
 Adds printing marks to the final document.
 """
-from __future__ import annotations
+#from __future__ import annotations
 
 # Python standard
 
@@ -56,15 +56,17 @@ class PrintingMark(Template):
     """
 
     __name__ = "printing mark"
-    __desciprtion__ = "Add printing marks to manuscript"
+    __description__ = "Add printing marks to manuscript"
 
     @property
     def name(self):
+        "Return name property"
         return PrintingMark.__name__
 
     @property
     def description(self):
-        return PrintingMark.__desciprtion__
+        "Return description property"
+        return PrintingMark.__description__
 
     def __init__(
         self,
@@ -73,7 +75,6 @@ class PrintingMark(Template):
         crop: bool = True,
         reg: bool = True,
         cmyk: bool = True,
-        fold: bool = True,
         direction: bool = True
     ):
 

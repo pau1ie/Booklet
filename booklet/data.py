@@ -35,10 +35,10 @@ from PIL import Image
 from booklet.utils.misc import resources_path
 from booklet.utils.images import icon_path
 
-des = (
+DES = (
     """PDF modulation for printing and press----------------------------------------------------"""
 )
-epi = (
+EPI = (
     "github: https://github.com/HornPenguin/Booklet \nsupport: support@hornpenguin.com"
 )
 
@@ -108,6 +108,10 @@ format_table = [
     ("A3", 297, 420),
     ("A4", 210, 297),
     ("A5", 148, 210),
+    ("A6", 105, 148),
+    ("A7", 74, 105),
+    ("A8", 52, 74),
+    ("A9", 37, 52),
     ("B3", 353, 500),
     ("B4", 250, 353),
     ("B5", 176, 250),

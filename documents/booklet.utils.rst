@@ -20,14 +20,6 @@ booklet.utils.conversion module
    :undoc-members:
    :show-inheritance:
 
-booklet.utils.fonts module
---------------------------
-
-.. automodule:: booklet.utils.fonts
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 booklet.utils.images module
 ---------------------------
 

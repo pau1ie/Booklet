@@ -21,14 +21,6 @@ booklet.core.manuscript module
    :undoc-members:
    :show-inheritance:
 
-booklet.core.modifiers module
------------------------------
-
-.. automodule:: booklet.core.modifiers
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 Module contents
 ---------------
 

@@ -1,13 +1,13 @@
-============================
-Terms of Book and Printing
-============================
+=====================================
+Glossary of Book and Printing Terms.
+=====================================
 
 This document describes basic bookbinding and printing terms.
 More detailed descriptions, algorithms and implementations are contained
 in :ref:`Features <features>`.
 
 
-Shape and Structure of Book
+Physical Composition of a Book
 ==================================
 
 Bookbinding is the process of binding materials to make a book. To
@@ -15,52 +15,48 @@ discuss how to make a book we need to agree how terms are defined.
 
 
 Page
-----
-
-A page is defined as one side of a leaf. So where pages are numbered,
-each page has it's own number.
+    A page is defined as one side of a leaf. So where pages are numbered,
+    each page has its own number.
 
 
 Leaf
-----
-
-A leaf contains two pages, one on each side.
+    A leaf is two pages, one on each side. It is what is turned when turning
+    a page.
 
 
 Sheet
------
-
-A piece of paper. The fact a sheet of paper can be cut into smaller
-sheets means that we need to be specific about what type of sheet
-we are referring to. Inside a section a sheet is two leaves folded
-and usually sewn together with the other sheets in the section. A larger
-sheet may have been used being folded and cut as described below
-to create these smaller sheets that are part of a section.
+    A piece of paper. In a book this is two leaves which are sewn in the middle,
+    containing four pages. However this may have been part of a larger sheet
+    which was folded and cut to make the signature, as described below.
 
 
 Signature
------------
-
-A group of sheets sewn together. 
-The **signature** is a contents block of a book, pamphlet, or booklet. 
-There are some synonyms, **section**, and **gathering**. This document
-will use **signature**.
-
-Pages compose a signature and the signatures compose a book, booklet,
-..., et cetera.
-A single page can become a signature and a single singnature can compose
-a single book or booklet, (usually booklet).
+    A group of one or more sheets of paper joined together. 
+    The **signature** is a contents block of a book, pamphlet, or booklet. 
+    There are some synonyms, **section**, and **gathering**. This document
+    will use **signature**.
 
 
 Text Block
-----------
+    One or more signatures are gathered together forming the text block,
+    which is the complete contents of the book.
 
-One or more signatures are gathered together forming the text block,
-which is the complete contents of the book.
 
+Recap
+------
+
+So we see that the pages of the book are called the text block. This is
+composed of one or more Signatures. These are composed of one or more
+Sheets of paper (Which may have been made by foilding and cutting larger
+sheets). Each sheet is folded in the middle, to make two leaves. Lastly
+each leaf has two sides which we call pages.
+
+
+Signatures
+===========
 
 Why are signatures required in bookbinding? 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+--------------------------------------------
 
 Single-signature books are limited in size, as each sheet needs to fit
 around the other folded sheets. The more sheets that are added to a
@@ -73,11 +69,12 @@ The sizes are listed below.
 
 
 Types of signature
-^^^^^^^^^^^^^^^^^^^^^^
+--------------------
 
 By the number of leaves
 """"""""""""""""""""""""""""
-Commonly used types are next,
+
+Commonly used signatures are:
 
 +-------------------+-------+---------+-------+
 |Name               |Pages  |Leaves   | Folds |
@@ -88,18 +85,18 @@ Commonly used types are next,
 +-------------------+-------+---------+-------+
 |octavo             |16     |8        | 3     |
 +-------------------+-------+---------+-------+
-|duodecimo(12mo)    |48     |24       | \*    |
+|duodecimo(12mo)    |48     |24       | [#t]_ |
 +-------------------+-------+---------+-------+
 |16mo               |64     |32       | 5     |
 +-------------------+-------+---------+-------+
-|18mo               |72     |36       | \*    |
+|18mo               |72     |36       | [#t]_ |
 +-------------------+-------+---------+-------+
 |32mo               |128    |64       | 6     |
 +-------------------+-------+---------+-------+
 |64mo               |256    |128      | 7     |
 +-------------------+-------+---------+-------+
 
-\* See Extended type below.
+.. [#t] See `Extended type`_ below.
 
 While the above mentioned names indicate leaves of each signature,
 they can also indicate the size of the book, if the original paper
@@ -128,7 +125,8 @@ However, signature folding is not as complex, because the signatures
 must end up with a centre fold where they are all sewn together. 
 
 
-**Signature folding**
+Signature folding
+-------------------
 
 * Every fold must be perpendicular or parallel to every other fold.
 * Each fold must be:
@@ -151,13 +149,13 @@ must end up with a centre fold where they are all sewn together.
 
 
 Standard type
-^^^^^^^^^^^^^^^^^
+"""""""""""""""""
 Repetation of 1st type folding only.
 Leaves = :math:`2^n`, i.e. 2, 4, 8, 16, 32, 64, 128, ... .
 
 
 Extended type
-^^^^^^^^^^^^^^^^^
+"""""""""""""""""""
 
 At least one step is 2nd type folding, this allows us to compose
 addtional prime numbers for divisor of leaves number.
@@ -191,21 +189,20 @@ Therefore, permitted numbers of pages per signature are
 :math:`4, 8, 16, 32, 64` and :math:`12, 24`.
 :math:`12, 24` signatures have diffent folding processes from 
 :math:`4, 8, 16, 32, 64`, as mentioned above.
-Bigger sheets could be used :math:`>64` to make a single signature, but it
-is not practical.
+In theory more folds could be used to make larger signatures
+(:math:`>64`) but 64 is the limit in practice.
 
 
 .. image:: ../_static/gathering_inserting.png
 
-There are two types of methods to combine signatures, 
-**inserting** and **gathering**. The signatures will look the same once
-the edges are cut, but the order the pages are printed on the larger
-sheet will differ depending on how they are folded.
-The *gathering* does not affect to order of each signature but
-*inserting* does to match the correct ordering of pages. 
+There are two types of methods to combine pages to make a book: 
+**inserting** (pages into a signature) and **gathering** (signatures to
+make a texct block). The pages need to be printed
+in the correct place which differs depending on how the sheets
+will be combined.
 
-The :math:`n` sheets signature is composed of :math:`i` time inserted
-:math:`f` sheets signature.
+The :math:`n` sheet signature is composed of :math:`i` inserted pages
+multiplied by :math:`f` - the number of pages in each signature.
 
 .. math:: 
     n = i \times f.
@@ -225,7 +222,7 @@ If we permit combinations of difference types.
 * :math:`[8, 4, 4]`
 
 Ordering of combinations in :math:`[,]` is important. The latter cases
-are called **deep type** signature in book of T.B. Wiliams (1895).
+are called **deep type** signature by `T.B. Wiliams (1895)`_.
 With deep type, we can make every even number signature for example,
 
 .. math::
@@ -307,10 +304,10 @@ Crop marker
 Trim line indicator.
 
 
-Registration marker
+Registration mark
 -----------------------
 
-A **Registration marker** is added to check the registration of color
+A **Registration mark** is added to check the registration of color
 printing of printing machine.
 Its color looks like the normal black color (CMYK(0, 0, 0, 1)) but 
 actually, it is a special color called
@@ -327,11 +324,14 @@ Further reading
   of books: A Dictionary of Descriptive Terminology, Drawings by Margaret
   R. Brown
 
-General and advanced information on bookbinding can be found in
-the dictionary written by Matt T. Roberts and Don Etherington.
-An `online version <https://cool.culturalheritage.org/don/>`_ is
-available. 
+* General and advanced information on bookbinding can be found in
+  the dictionary written by Matt T. Roberts and Don Etherington.
+  An `online version <https://cool.culturalheritage.org/don/>`_ is
+  available. 
 
 * T.B. Wiliams, Hints on imposition. An illustrated guide for printer and
   pressman in the construction of book-forms, 1895. An `online version
-  <https://archive.org/details/hintsonimpositio00will/mode/2up>` is available.
+  <https://archive.org/details/hintsonimpositio00will/mode/2up>`_
+  is available.
+
+.. _T.B. Wiliams (1895):

@@ -13,9 +13,10 @@ from booklet import data
 class FormatHelp(argparse.Action):
     """
     # Argument Parsing Action
-
     """
     def __call__(self, parser, namespace, values, option_string=None):
+        " Formats page formats for various different paper sizes  "
+
         length = 15
         print(
             "Format".ljust(length)
@@ -101,7 +102,7 @@ def type_color(string: str) -> str:
 # ---------------------------------------
 
 cli_parser = argparse.ArgumentParser(
-    prog=f"{project_name}", description=data.des, epilog=data.epi
+    prog=f"{project_name}", description=data.DES, epilog=data.EPI
 )
 
 # Console activation

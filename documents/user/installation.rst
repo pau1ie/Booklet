@@ -2,13 +2,15 @@
 Installation
 ==================
 
-HPBooklet provides 2 types of executable files for Windows, Linux(Ubuntu).
-All the resources are fully independent to OS, therefore supporting OSX is possible.
-However, the developer does not have any Mac device, so it will be presented later.
-If you are OSX user you can build project yourself see below :ref:`From Source <from_source>` section.
+HPBooklet provides executable files for Windows and Linux(Ubuntu).
+All the resources are fully independent to the OS, therefore it should
+run fine on OSX, however, the developer does not have any Apple devices,
+so cannot build it.
+If you are OSX user you can build project yourself see the 
+:ref:`From Source <from_source>` section below.
 
 
-Executable bunldle
+Executable Bunldle
 --------------------
 
 Download executable file from `Sourceforge <https://sourceforge.net/projects/hornpenguinbooklet/>`_.
@@ -17,7 +19,7 @@ Download executable file from `Sourceforge <https://sourceforge.net/projects/hor
 
     <a href="https://sourceforge.net/projects/hornpenguinbooklet/files/latest/download"><img alt="Download HornPenguin Booklet" src="https://a.fsdn.com/con/app/sf-download-button" width=276 height=48 srcset="https://a.fsdn.com/con/app/sf-download-button?button_size=2x 2x"></a>
 
-Repository provides two types of program one file version and one directory bundle.
+The repository provides two types of program one file version and one directory bundle.
 The directory bundle version of each OS is presented with compressed file, :code:`zip` and :code:`tgz` which are common compressed file format in each OS. 
 
 Windows
@@ -44,30 +46,14 @@ See the below section.
 
 .. warning:: 
 
-    Python is compatible for major three OSs, however, the implementations of tkinter in those OSs are different in details.
-    For example, there is a :code:`iconbitmap` issue in Linux environment and basic tkiner Label and Button are not work properly in OSX of color routines.
-    The developer tested and saw those bugs and fixed them with best efforts (`tkmacosx <https://github.com/Saadmairaj/tkmacosx>`_ module was useful), but there can be some bugs in Linux and Mac environments.
-    Please notice the developer those bugs to fix.
-
-Older version
-^^^^^^^^^^^^^^^^^^^^^^
-
-The 0.0.1 version was seperated by user interface. The graphic interface version got :code:`w` suffix in file name.
-
-**Windows**
-
-.. code-block:: 
-
-    booklet.exe # command line interface
-    bookletw.exe # graphic interface
-
-
-**Linux**
-
-.. code-block:: 
-
-    booklet
-    bookletw
+    Python is compatible with the major three OSs, however, the
+    implementation of tkinter in those OSs have minor differences.
+    For example, :code:`iconbitmap` had an issue in Linux. Tkiner Label
+    and Button do not work properly in OSX.
+    The developer identified those bugs and fixed them as best he could:
+    (the `tkmacosx <https://github.com/Saadmairaj/tkmacosx>`_ module was
+    useful), but there could be more bugs in Linux and Mac environments.
+    Please create an issue in gitbub if you notice any additional bugs.
 
 
 From source
@@ -75,10 +61,10 @@ From source
 
 .. _from_source:
 
-This section describes the execution and build process with
-source directory.
+This section explains how to aquire, run and build the project from
+source.
 
-Get a project
+Get the project
 ^^^^^^^^^^^^^^^^^^^
 
 You can download the project with git. 
@@ -93,12 +79,12 @@ or download with zipped file from project `source repository <https://github.com
 
     **Directory**
 
-    - :code:`booklet`: Python source codes.
+    - :code:`booklet`: Python source code.
     - :code:`dist`: Standalone executable files for OSs.
-    - :code:`documents`: Sphinx rst documents
+    - :code:`documents`: Sphinx rst document source (i.e. source of this documentation)
     - :code:`images`: Miscellaneous images, in working images or original :code:`.odg` files.
-    - :code:`resources`: Essential resources for program, voice, images, logo, ... . 
-    - :code:`test`: Temper test directory.
+    - :code:`resources`: Essential resources for program: sound, images, logo, ... . 
+    - :code:`test`: Contains some jupyter notebook tests.
 
     **File**
 
@@ -116,20 +102,23 @@ Dependencies
 * `fonttools <https://github.com/fonttools/fonttools>`_
 * `tkmacosc <https://pypi.org/project/tkmacosx/>`_: OSX specific dependency
 
-Install above dependencies with next command. 
+Install the above dependencies with the following command. 
 
 .. code-block:: 
 
-    pip install PyPDF2 reportlab Pillow simpleaudio fonttools
+    pip install -r requirements.txt
 
-For :code:`simpleaudio` in Ubuntu, it requires compilers, build tools, and prerequisite library, :code:`libasound2-dev`, to install. 
-If you are using Ubuntu, you can install :code:`build-essential` from Ubuntu repository and install :code:`libasound2-dev` with next command.
+:code:`simpleaudio` in Ubuntu, requires compilers, build tools, and a
+prerequisite library, :code:`libasound2-dev`, to be installed. 
+If you are using Ubuntu, you can install :code:`build-essential` from
+the Ubuntu repository and install :code:`libasound2-dev` with the
+following command.
 
 .. code-block:: 
     
     sudo apt install build-essential libasound2-dev
 
-In Mac, they are automatically installed. 
+In Mac, these prerequisites are automatically installed.
 
 
 Execution with python 
@@ -137,14 +126,15 @@ Execution with python
 
 From the root of project directory,
 
-CUI
-""""""""""""""""""
+Command Line Interface
+""""""""""""""""""""""""
 
 .. code-block:: 
 
     python ./booklet/main.py --console {INPUT} {OUTPUTPAHT} {options}
 
-See :ref:`usage <usage_label>` for options and basic usages.
+See :ref:`usage <usage_label>` for more detail about thge command line
+options.
 
 GUI
 """"""""""""""""""
@@ -153,20 +143,23 @@ GUI
 
     python ./booklet/main.py 
 
-Build
+Building
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-This project uses `PyInstaller <https://pyinstaller.org/en/stable/>`_ as a build tool to generate a standalone executable bundle.
+This project uses `PyInstaller <https://pyinstaller.org/en/stable/>`_ as
+a build tool to generate a standalone executable bundle.
 In the root of the project directory, there is a :code:`build.py` file. 
-It is a simple python script to initiate the proejct and document build process with pyinstaller and sphinx.
-Install Pyinstaller, befroe you start to build.
+It is a simple python script to initiate the proejct and document build
+process with pyinstaller and sphinx.
+Install Pyinstaller, before starting the build.
 
 .. code-block::
 
-    pip install pyinstaller
+    pip install requirements_build.txt
 
-There are prefixed arguments in `build.py` and you can use additional pyinstaller arguments.
-See PyInstaller `documents <https://pyinstaller.org/en/stable/>`_.
+Some settings are preconfigured in `build.py`. additional pyinstaller
+arguments can be used. See the PyInstaller
+`documentation <https://pyinstaller.org/en/stable/>`_.
 
 .. code-block:: 
 
@@ -182,7 +175,8 @@ Build with graphic user interface *with splash image*.
 
 The :code:`--onedir` option add platform name to its directory name.
 
-If you add arguments with :code:`--sphinx` option, :code:`build.py` automatically build project documents with sphinx.
+Add the :code:`--sphinx` option to :code:`build.py` to automatically
+build project documentation with sphinx.
 
 .. code-block:: 
 

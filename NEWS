@@ -1,3 +1,11 @@
+Version: 0.1.0 - Current
+
+    * Many fixes to allow the program to work.
+    * Upgraded PyPDF
+    * Updated Documentation
+    * Removed some unused code
+    * Note - Utils tab is untested.
+
 Version: 0.0.3 - in working
 
     * Note Template is in developing.
